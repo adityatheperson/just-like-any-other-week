@@ -203,6 +203,32 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
       fadeInPlay();
     };
 
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        cancelFade();
+        if (!audio.paused) {
+          try {
+            localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
+          } catch {
+            // ignore
+          }
+          audio.pause();
+          setIsPlaying(false);
+        }
+      } else if (inViewRef.current && !userPaused) {
+        fadeInPlay();
+      }
+    };
+
+    const handleWindowBlur = () => {
+      if (document.hidden) {
+        handleVisibilityChange();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handleVisibilityChange);
+    window.addEventListener("blur", handleWindowBlur);
     window.addEventListener("memoir:begin-reading", handleBeginReading);
     window.addEventListener("click", handleUnlockGesture, { passive: true });
     window.addEventListener("pointerdown", handleUnlockGesture, { passive: true });
@@ -211,13 +237,16 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
 
     return () => {
       observer.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handleVisibilityChange);
+      window.removeEventListener("blur", handleWindowBlur);
       window.removeEventListener("memoir:begin-reading", handleBeginReading);
       window.removeEventListener("click", handleUnlockGesture);
       window.removeEventListener("pointerdown", handleUnlockGesture);
       window.removeEventListener("touchstart", handleUnlockGesture);
       window.removeEventListener("keydown", handleUnlockGesture);
     };
-  }, [userPaused, fadeInPlay, fadeOutPause]);
+  }, [userPaused, fadeInPlay, fadeOutPause, cancelFade]);
 
   // Fade out cleanly when unmounting (e.g. returning to landing page)
   useEffect(() => {
