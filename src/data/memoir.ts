@@ -66,6 +66,7 @@ export interface MemoirContent {
     paragraphs: string[];
     photo?: PhotoAsset;
     afterPhotoParagraphs?: string[];
+    secondPhoto?: PhotoAsset;
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -156,6 +157,15 @@ export const memoirData: MemoirContent = {
       "The drive was not that difficult. It was a 6-hour drive with a stop for lunch. I was one of the drivers, and since my car could only comfortably fit four people, it was the quieter car. So it was really easy to fall asleep, but we also had a lot of great discussions on that drive. One of them was about what we should do for Romir’s birthday. Romir was one of my friends on the trip, and it happened to be his birthday that day. To give you some context, Romir is the type of person who tries to make everyone laugh, so we only saw it fitting to make him smile. So we started planning the surprise.",
       "We arrived at Lake Tahoe around 5 p.m. While some people went to freshen up, others went to buy groceries. We planned it so that Romir would be one of the people who stayed at the Airbnb. We bought a cake, candles, drinks, and decorations, trying to make sure that we did not forget any of the actual groceries at the same time. We headed back home and then successfully made Romir stay downstairs while we set up the kitchen for the surprise. We set out a table cover, opened the cake, brought the balloons out, poured the drinks, turned off the lights, and finally lit the candles.",
     ],
+    secondPhoto: {
+      id: "romir-birthday",
+      src: "/images/romir-birthday.jpg",
+      alt: "Romir cutting his birthday cake at the dining table with balloons and sparkling cider",
+      label: "Romir's Surprise Birthday",
+      expectedContent: "Romir cutting his birthday cake at the dining table",
+      aspect: "portrait",
+      size: "full",
+    },
   },
 
   chapters: [
