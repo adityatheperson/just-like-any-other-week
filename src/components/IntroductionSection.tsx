@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Volume2, VolumeX, Play, Pause } from "lucide-react";
 import type { MemoirContent } from "@/data/memoir";
@@ -12,12 +12,16 @@ interface IntroductionSectionProps {
 const STORAGE_KEY = "memoir_laufey_progress_sec";
 const VOLUME_STORAGE_KEY = "memoir_laufey_volume";
 const DEFAULT_VOLUME = 0.18;
+const FADE_IN_MS = 1100;
+const FADE_OUT_MS = 650;
 
 export function IntroductionSection({ introduction }: IntroductionSectionProps) {
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const inViewRef = useRef<boolean>(false);
+  const fadeRafRef = useRef<number | null>(null);
+  const targetVolumeRef = useRef<number>(DEFAULT_VOLUME);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -34,6 +38,86 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
       ? "/just-like-any-other-week/audio/from-the-start.m4a"
       : "/audio/from-the-start.m4a";
 
+  const cancelFade = useCallback(() => {
+    if (fadeRafRef.current !== null) {
+      cancelAnimationFrame(fadeRafRef.current);
+      fadeRafRef.current = null;
+    }
+  }, []);
+
+  // Smooth exponential volume ramp helper
+  const fadeAudioTo = useCallback(
+    (targetVol: number, durationMs: number, onComplete?: () => void) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      cancelFade();
+      const startVol = audio.volume;
+      const startTime = performance.now();
+
+      const tick = (now: number) => {
+        const elapsed = now - startTime;
+        const t = Math.min(elapsed / durationMs, 1);
+        // Smooth cubic ease-in-out curve
+        const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        const nextVol = Math.max(0, Math.min(1, startVol + (targetVol - startVol) * eased));
+        audio.volume = nextVol;
+
+        if (t < 1) {
+          fadeRafRef.current = requestAnimationFrame(tick);
+        } else {
+          fadeRafRef.current = null;
+          onComplete?.();
+        }
+      };
+
+      fadeRafRef.current = requestAnimationFrame(tick);
+    },
+    [cancelFade]
+  );
+
+  // Smooth start: start from 0 volume and swell up to targetVolume
+  const fadeInPlay = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    cancelFade();
+    audio.muted = isMuted;
+
+    // If completely paused, start near 0 and ramp smoothly up
+    if (audio.paused) {
+      audio.volume = 0.01;
+      try {
+        await audio.play();
+        setIsPlaying(true);
+        setBlockedByBrowser(false);
+        fadeAudioTo(targetVolumeRef.current, FADE_IN_MS);
+      } catch {
+        setBlockedByBrowser(true);
+      }
+    } else {
+      // Already playing (e.g. mid-fade-out): smoothly ramp back up
+      setIsPlaying(true);
+      fadeAudioTo(targetVolumeRef.current, FADE_IN_MS);
+    }
+  }, [cancelFade, fadeAudioTo, isMuted]);
+
+  // Smooth stop: ramp volume down to 0 before pausing & saving timestamp
+  const fadeOutPause = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || audio.paused) return;
+
+    setIsPlaying(false);
+    fadeAudioTo(0, FADE_OUT_MS, () => {
+      try {
+        localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
+      } catch {
+        // ignore
+      }
+      audio.pause();
+    });
+  }, [fadeAudioTo]);
+
   // Load saved volume on mount
   useEffect(() => {
     try {
@@ -42,22 +126,20 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
         const parsed = parseFloat(savedVol);
         if (!Number.isNaN(parsed) && parsed >= 0 && parsed <= 1) {
           setVolume(parsed);
-          if (audioRef.current) {
-            audioRef.current.volume = parsed;
-          }
+          targetVolumeRef.current = parsed;
         }
       }
     } catch {
       // ignore
     }
-  }, []);
+    return () => cancelFade();
+  }, [cancelFade]);
 
   // Restore saved progress on metadata load
   const handleLoadedMetadata = () => {
     const audio = audioRef.current;
     if (!audio) return;
     setDuration(audio.duration || 0);
-    audio.volume = volume;
 
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -90,21 +172,6 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
     const audio = audioRef.current;
     if (!section || !audio) return;
 
-    audio.volume = volume;
-
-    const tryPlayWithSound = async () => {
-      if (userPaused) return;
-      try {
-        audio.muted = isMuted;
-        audio.volume = volume;
-        await audio.play();
-        setIsPlaying(true);
-        setBlockedByBrowser(false);
-      } catch {
-        setBlockedByBrowser(true);
-      }
-    };
-
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
@@ -112,17 +179,11 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
         inViewRef.current = entry.isIntersecting;
 
         if (entry.isIntersecting) {
-          tryPlayWithSound();
-        } else {
-          if (!audio.paused) {
-            try {
-              localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
-            } catch {
-              // ignore
-            }
-            audio.pause();
-            setIsPlaying(false);
+          if (!userPaused) {
+            fadeInPlay();
           }
+        } else {
+          fadeOutPause();
         }
       },
       { threshold: 0.15 }
@@ -131,38 +192,15 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
     observer.observe(section);
 
     const handleUnlockGesture = () => {
-      if (userPaused) return;
-      audio.muted = isMuted;
-      audio.volume = volume;
-      audio
-        .play()
-        .then(() => {
-          setBlockedByBrowser(false);
-          if (!inViewRef.current) {
-            audio.pause();
-            setIsPlaying(false);
-          } else {
-            setIsPlaying(true);
-          }
-        })
-        .catch(() => {
-          // ignore
-        });
+      if (userPaused || !inViewRef.current) return;
+      if (audio.paused) {
+        fadeInPlay();
+      }
     };
 
     const handleBeginReading = () => {
       setUserPaused(false);
-      audio.muted = isMuted;
-      audio.volume = volume;
-      audio
-        .play()
-        .then(() => {
-          setIsPlaying(true);
-          setBlockedByBrowser(false);
-        })
-        .catch(() => {
-          // ignore
-        });
+      fadeInPlay();
     };
 
     window.addEventListener("memoir:begin-reading", handleBeginReading);
@@ -179,45 +217,55 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
       window.removeEventListener("touchstart", handleUnlockGesture);
       window.removeEventListener("keydown", handleUnlockGesture);
     };
-  }, [userPaused, isMuted, volume]);
+  }, [userPaused, fadeInPlay, fadeOutPause]);
 
-  const togglePlayPause = async () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-      setUserPaused(true);
-      try {
-        localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
-      } catch {
-        // ignore
+  // Fade out cleanly when unmounting (e.g. returning to landing page)
+  useEffect(() => {
+    const audioEl = audioRef.current;
+    return () => {
+      cancelFade();
+      if (audioEl && !audioEl.paused) {
+        try {
+          localStorage.setItem(STORAGE_KEY, String(audioEl.currentTime));
+        } catch {
+          // ignore
+        }
+        audioEl.pause();
       }
+    };
+  }, [cancelFade]);
+
+  const togglePlayPause = () => {
+    if (isPlaying) {
+      setUserPaused(true);
+      fadeOutPause();
     } else {
       setUserPaused(false);
-      audio.muted = isMuted;
-      audio.volume = volume;
-      try {
-        await audio.play();
-        setIsPlaying(true);
-        setBlockedByBrowser(false);
-      } catch {
-        // ignore
-      }
+      fadeInPlay();
     }
   };
 
   const toggleMute = () => {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.muted = !isMuted;
-    setIsMuted(!isMuted);
+    if (!isMuted) {
+      fadeAudioTo(0, 280, () => {
+        audio.muted = true;
+        setIsMuted(true);
+      });
+    } else {
+      audio.muted = false;
+      setIsMuted(false);
+      fadeAudioTo(targetVolumeRef.current, 380);
+    }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const nextVolume = parseFloat(e.target.value);
+    cancelFade();
     setVolume(nextVolume);
+    targetVolumeRef.current = nextVolume;
+
     if (audioRef.current) {
       audioRef.current.volume = nextVolume;
       if (nextVolume > 0 && isMuted) {
@@ -260,21 +308,20 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
       <audio
         ref={audioRef}
         src={audioSrc}
-        autoPlay
         loop
         preload="auto"
         onLoadedMetadata={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
-        onPlay={() => {
-          setIsPlaying(true);
-          setBlockedByBrowser(false);
-        }}
-        onPause={() => setIsPlaying(false)}
       />
 
       <div className="mx-auto max-w-3xl">
         {/* Editorial soundtrack bar with progress scrubber and volume slider */}
-        <div className="mb-12 border-y border-[var(--border-subtle)] py-3.5 px-1 font-mono text-xs text-[var(--fg-muted)] space-y-3">
+        <motion.div
+          initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-12 border-y border-[var(--border-subtle)] py-3.5 px-1 font-mono text-xs text-[var(--fg-muted)] space-y-3"
+        >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <button
@@ -353,13 +400,12 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
               {duration ? formatTime(duration) : "0:30"}
             </span>
           </div>
-        </div>
+        </motion.div>
 
         <motion.article
           initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.85, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
         >
           {introduction.paragraphs.length > 0 && (
             <div className="space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
