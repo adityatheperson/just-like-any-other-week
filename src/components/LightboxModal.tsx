@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Camera } from "lucide-react";
 import type { PhotoAsset } from "@/data/memoir";
+import { resolveAssetUrl } from "./PhotoFrame";
 
 interface LightboxModalProps {
   photo: PhotoAsset | null;
@@ -11,7 +12,10 @@ interface LightboxModalProps {
 }
 
 export function LightboxModal({ photo, onClose }: LightboxModalProps) {
+  const [hasRealImage, setHasRealImage] = useState(false);
+
   useEffect(() => {
+    setHasRealImage(false);
     if (!photo) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -36,7 +40,7 @@ export function LightboxModal({ photo, onClose }: LightboxModalProps) {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-5xl border border-[#F5F2EB]/20 bg-[#181715] p-6 sm:p-10"
+            className="relative w-full max-w-5xl border border-[#F5F2EB]/20 bg-[#181715] p-4 sm:p-8"
           >
             <div className="flex items-center justify-between border-b border-[#F5F2EB]/15 pb-4">
               <div className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-wider text-[#B8B2A6]">
@@ -54,16 +58,28 @@ export function LightboxModal({ photo, onClose }: LightboxModalProps) {
               </button>
             </div>
 
-            <div className="my-8 min-h-[260px] sm:min-h-[380px] flex flex-col justify-center border border-[#F5F2EB]/10 bg-[#121110] p-6 sm:p-12">
-              <p className="font-mono text-xs uppercase tracking-widest text-[#B8B2A6]">
-                Full-Frame Plate Inspection · {photo.aspect}
-              </p>
-              <p className="mt-4 font-serif text-2xl sm:text-3xl italic leading-snug text-[#F5F2EB]">
-                {photo.expectedContent}
-              </p>
-              <p className="mt-4 font-mono text-xs text-[#B8B2A6]">
-                Asset path: <code className="underline underline-offset-4">{photo.src}</code>
-              </p>
+            <div className="my-6 relative flex items-center justify-center bg-[#121110]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={resolveAssetUrl(photo.src)}
+                alt={photo.alt}
+                onLoad={() => setHasRealImage(true)}
+                onError={() => setHasRealImage(false)}
+                className={`max-h-[75vh] w-auto object-contain ${
+                  hasRealImage ? "block" : "hidden"
+                }`}
+              />
+
+              {!hasRealImage && (
+                <div className="w-full min-h-[260px] sm:min-h-[380px] flex flex-col justify-center border border-[#F5F2EB]/10 p-6 sm:p-12">
+                  <p className="font-mono text-xs uppercase tracking-widest text-[#B8B2A6]">
+                    Full-Frame Plate Inspection · {photo.aspect}
+                  </p>
+                  <p className="mt-4 font-serif text-2xl sm:text-3xl italic leading-snug text-[#F5F2EB]">
+                    {photo.expectedContent}
+                  </p>
+                </div>
+              )}
             </div>
 
             {photo.caption && (

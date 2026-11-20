@@ -47,7 +47,10 @@ export default function MemoirPage() {
               exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
               transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
             >
-              <IntroductionSection introduction={memoirData.introduction} />
+              <IntroductionSection
+                introduction={memoirData.introduction}
+                onExpandPhoto={setExpandedPhoto}
+              />
             </motion.div>
           )}
         </AnimatePresence>

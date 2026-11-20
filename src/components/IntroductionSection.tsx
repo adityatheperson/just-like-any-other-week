@@ -3,10 +3,12 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Volume2, VolumeX, Play, Pause } from "lucide-react";
-import type { MemoirContent } from "@/data/memoir";
+import type { MemoirContent, PhotoAsset } from "@/data/memoir";
+import { PhotoFrame } from "./PhotoFrame";
 
 interface IntroductionSectionProps {
   introduction: MemoirContent["introduction"];
+  onExpandPhoto?: (photo: PhotoAsset) => void;
 }
 
 const STORAGE_KEY = "memoir_laufey_progress_sec";
@@ -15,7 +17,10 @@ const DEFAULT_VOLUME = 0.18;
 const FADE_IN_MS = 1100;
 const FADE_OUT_MS = 650;
 
-export function IntroductionSection({ introduction }: IntroductionSectionProps) {
+export function IntroductionSection({
+  introduction,
+  onExpandPhoto,
+}: IntroductionSectionProps) {
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -456,6 +461,15 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
                   {paragraph}
                 </p>
               ))}
+            </div>
+          )}
+
+          {introduction.photo && (
+            <div className="mt-14 sm:mt-16">
+              <PhotoFrame
+                photo={introduction.photo}
+                onExpand={(photo) => onExpandPhoto?.(photo)}
+              />
             </div>
           )}
         </motion.article>

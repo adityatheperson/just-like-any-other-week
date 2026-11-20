@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { Maximize2, Camera } from "lucide-react";
 import type { PhotoAsset } from "@/data/memoir";
@@ -21,6 +21,18 @@ const aspectClasses: Record<PhotoAsset["aspect"], string> = {
   square: "aspect-square",
 };
 
+export function resolveAssetUrl(src: string): string {
+  if (
+    typeof window !== "undefined" &&
+    window.location.pathname.startsWith("/just-like-any-other-week") &&
+    src.startsWith("/") &&
+    !src.startsWith("/just-like-any-other-week")
+  ) {
+    return `/just-like-any-other-week${src}`;
+  }
+  return src;
+}
+
 export function PhotoFrame({
   photo,
   onExpand,
@@ -29,8 +41,19 @@ export function PhotoFrame({
 }: PhotoFrameProps) {
   const [hasRealImage, setHasRealImage] = useState(false);
   const [imageError, setImageError] = useState(true);
+  const [resolvedSrc, setResolvedSrc] = useState(photo.src);
   const containerRef = useRef<HTMLElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    const url = resolveAssetUrl(photo.src);
+    setResolvedSrc(url);
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+      setHasRealImage(true);
+      setImageError(false);
+    }
+  }, [photo.src]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -60,10 +83,10 @@ export function PhotoFrame({
           aspectClasses[photo.aspect]
         }`}
       >
-        {/* Attempt to load actual image from public/images/ when user adds it */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={photo.src}
+          ref={imgRef}
+          src={resolvedSrc}
           alt={photo.alt}
           onLoad={() => {
             setHasRealImage(true);
@@ -78,13 +101,11 @@ export function PhotoFrame({
           }`}
         />
 
-        {/* Editorial Architecture Placeholder (shown until real image is placed in public/images/) */}
         {(!hasRealImage || imageError) && (
           <motion.div
             style={{ y: yOffset }}
             className="absolute inset-0 flex flex-col justify-between p-5 sm:p-8 select-none"
           >
-            {/* Subtle crop marks & technical frame */}
             <div className="flex items-start justify-between gap-4 border-b border-current/10 pb-3">
               <div className="flex items-center gap-2 font-mono text-[11px] tracking-wider uppercase opacity-75">
                 <Camera className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
@@ -95,14 +116,12 @@ export function PhotoFrame({
               </span>
             </div>
 
-            {/* Center editorial note */}
             <div className="my-auto max-w-lg py-4">
               <p className="font-serif text-xl sm:text-2xl italic leading-snug opacity-90">
                 {photo.expectedContent}
               </p>
             </div>
 
-            {/* Bottom bar with expand prompt */}
             <div className="flex items-center justify-between border-t border-current/10 pt-3 font-mono text-[11px] uppercase tracking-wider opacity-75">
               <span>placeholder test</span>
               <span className="inline-flex items-center gap-1.5 group-hover:opacity-100">
@@ -113,7 +132,6 @@ export function PhotoFrame({
           </motion.div>
         )}
 
-        {/* Expand badge when real image is loaded */}
         {hasRealImage && !imageError && (
           <div className="absolute bottom-3 right-3 bg-[#141412]/75 text-[#FAF8F3] px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wider flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
             <span>Expand</span>

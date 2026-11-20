@@ -64,6 +64,7 @@ export interface MemoirContent {
     heading: string;
     epigraph: string;
     paragraphs: string[];
+    photo?: PhotoAsset;
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -141,6 +142,15 @@ export const memoirData: MemoirContent = {
       "However, as my friends started to reach my house, that feeling went away. We had planned on meeting at 9:30 a.m., but as usual, some people were late. Our parents met each other and discussed a few things while we all loaded the cars. Eleven people were going on this trip, in two separate cars, for a week, on a road trip down to Lake Tahoe and then Yosemite.",
       "Even though we knew this might be our last adventure together, that feeling was not something looming over our heads. We were rather occupied with how to arrange all the bags so that they fit in the cars. And at 10:30 a.m., we began driving!",
     ],
+    photo: {
+      id: "intro-departure",
+      src: "/images/intro-departure.jpg",
+      alt: "Friends gathered by the car before departing on the senior trip",
+      label: "June 13 · Morning Departure",
+      expectedContent: "Friends gathered by the car before departing on the senior trip",
+      aspect: "wide",
+      size: "full",
+    },
   },
 
   chapters: [
