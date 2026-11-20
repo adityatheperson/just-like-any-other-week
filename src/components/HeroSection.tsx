@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { MemoirContent, PhotoAsset } from "@/data/memoir";
 import { PhotoFrame } from "./PhotoFrame";
 
@@ -18,10 +18,36 @@ export function HeroSection({
   onExpandPhoto,
 }: HeroSectionProps) {
   const prefersReducedMotion = useReducedMotion();
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
+  // Duplicate slides so the continuous auto-moving marquee loops seamlessly
   const slides = data.hero.carousel;
+  const loopingSlides = [...slides, ...slides];
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    let animationFrameId: number;
+    let scrollPos = 0;
+
+    const step = () => {
+      const el = trackRef.current;
+      if (el && !isHovered) {
+        scrollPos += 0.65;
+        const halfWidth = el.scrollWidth / 2;
+        if (halfWidth > 0 && scrollPos >= halfWidth) {
+          scrollPos = 0;
+        }
+        el.scrollLeft = scrollPos;
+      } else if (el && isHovered) {
+        scrollPos = el.scrollLeft;
+      }
+      animationFrameId = requestAnimationFrame(step);
+    };
+
+    animationFrameId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isHovered, prefersReducedMotion]);
 
   const fadeUp = {
     initial: prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 },
@@ -29,42 +55,16 @@ export function HeroSection({
     transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] as const },
   };
 
-  const scrollCarousel = (direction: "prev" | "next") => {
-    if (!carouselRef.current) return;
-    const container = carouselRef.current;
-    const cardWidth = container.firstElementChild?.clientWidth ?? container.clientWidth * 0.8;
-    const nextIdx =
-      direction === "next"
-        ? Math.min(activeIndex + 1, slides.length - 1)
-        : Math.max(activeIndex - 1, 0);
-
-    setActiveIndex(nextIdx);
-    container.scrollTo({
-      left: nextIdx * (cardWidth + 24),
-      behavior: prefersReducedMotion ? "auto" : "smooth",
-    });
-  };
-
-  const handleScroll = () => {
-    if (!carouselRef.current) return;
-    const container = carouselRef.current;
-    const cardWidth = (container.firstElementChild?.clientWidth ?? 500) + 24;
-    const idx = Math.round(container.scrollLeft / cardWidth);
-    if (idx !== activeIndex && idx >= 0 && idx < slides.length) {
-      setActiveIndex(idx);
-    }
-  };
-
   return (
     <section
       id="top"
-      className="relative min-h-[calc(100vh-69px)] w-full border-b border-[var(--border-subtle)] px-4 py-12 sm:px-8 sm:py-16 flex flex-col justify-between"
+      className="relative min-h-[calc(100vh-69px)] w-full px-4 py-10 sm:px-8 sm:py-14 flex flex-col justify-between overflow-hidden"
     >
+      {/* Header & Begin Reading Button */}
       <div className="mx-auto w-full max-w-7xl">
-        {/* Header & Begin Reading CTA */}
         <motion.div
           {...fadeUp}
-          className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-10 border-b border-[var(--border-subtle)]"
+          className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-8 border-b border-[var(--border-subtle)]"
         >
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-[var(--fg-muted)]">
@@ -85,65 +85,35 @@ export function HeroSection({
               className="inline-flex items-center gap-3 border border-[var(--fg-primary)] bg-[var(--fg-primary)] text-[var(--bg-primary)] px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-[var(--accent)] hover:border-[var(--accent)] transition-colors"
             >
               <span>{data.hero.scrollPrompt}</span>
-              <ArrowDown className="h-3.5 w-3.5" />
+              <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
         </motion.div>
-
-        {/* Image Carousel */}
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-10"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-[var(--fg-muted)] tabular-nums">
-              <span>
-                0{activeIndex + 1} / 0{slides.length}
-              </span>
-              <span>·</span>
-              <span>Trip Filmstrip</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => scrollCarousel("prev")}
-                disabled={activeIndex === 0}
-                aria-label="Previous image"
-                className="flex h-9 w-9 items-center justify-center border border-[var(--border-strong)] text-[var(--fg-primary)] hover:bg-[var(--fg-primary)] hover:text-[var(--bg-primary)] disabled:opacity-35 disabled:pointer-events-none transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollCarousel("next")}
-                disabled={activeIndex === slides.length - 1}
-                aria-label="Next image"
-                className="flex h-9 w-9 items-center justify-center border border-[var(--border-strong)] text-[var(--fg-primary)] hover:bg-[var(--fg-primary)] hover:text-[var(--bg-primary)] disabled:opacity-35 disabled:pointer-events-none transition-colors"
-              >
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-
-          <div
-            ref={carouselRef}
-            onScroll={handleScroll}
-            className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory"
-          >
-            {slides.map((photo) => (
-              <div
-                key={photo.id}
-                className="w-[85vw] sm:w-[580px] lg:w-[760px] shrink-0 snap-start"
-              >
-                <PhotoFrame photo={photo} onExpand={onExpandPhoto} />
-              </div>
-            ))}
-          </div>
-        </motion.div>
       </div>
+
+      {/* Self-Moving Image Carousel */}
+      <motion.div
+        initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+        className="my-auto pt-8"
+      >
+        <div
+          ref={trackRef}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="flex gap-6 overflow-x-hidden select-none"
+        >
+          {loopingSlides.map((photo, index) => (
+            <div
+              key={`${photo.id}-${index}`}
+              className="w-[82vw] sm:w-[520px] lg:w-[640px] shrink-0"
+            >
+              <PhotoFrame photo={photo} onExpand={onExpandPhoto} />
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </section>
   );
 }

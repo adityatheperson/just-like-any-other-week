@@ -20,7 +20,7 @@ export default function MemoirPage() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--fg-primary)]">
-      <TopEditorialBar />
+      <TopEditorialBar onReturnHome={() => setHasBegunReading(false)} />
 
       <main>
         <HeroSection
