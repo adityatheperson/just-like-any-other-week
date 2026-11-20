@@ -24,6 +24,7 @@ export function IntroductionSection({
 }: IntroductionSectionProps) {
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
+  const introTopZoneRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const inViewRef = useRef<boolean>(false);
   const fadeRafRef = useRef<number | null>(null);
@@ -174,9 +175,9 @@ export function IntroductionSection({
   };
 
   useEffect(() => {
-    const section = sectionRef.current;
+    const topZone = introTopZoneRef.current;
     const audio = audioRef.current;
-    if (!section || !audio) return;
+    if (!topZone || !audio) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -192,10 +193,10 @@ export function IntroductionSection({
           fadeOutPause();
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.05 }
     );
 
-    observer.observe(section);
+    observer.observe(topZone);
 
     const handleUnlockGesture = () => {
       if (userPaused || !inViewRef.current) return;
@@ -453,31 +454,34 @@ export function IntroductionSection({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
         >
-          {introduction.paragraphs.length > 0 && (
-            <div className="space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
-              {introduction.paragraphs.map((paragraph, idx) => (
-                <p
-                  key={idx}
-                  className={
-                    idx === 0
-                      ? "first-letter:float-left first-letter:mr-3.5 first-letter:mt-1 first-letter:font-serif first-letter:text-5xl sm:first-letter:text-6xl first-letter:leading-[0.85] first-letter:text-[var(--accent)]"
-                      : ""
-                  }
-                >
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          )}
+          {/* Audio zone ends right at the divider */}
+          <div ref={introTopZoneRef}>
+            {introduction.paragraphs.length > 0 && (
+              <div className="space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
+                {introduction.paragraphs.map((paragraph, idx) => (
+                  <p
+                    key={idx}
+                    className={
+                      idx === 0
+                        ? "first-letter:float-left first-letter:mr-3.5 first-letter:mt-1 first-letter:font-serif first-letter:text-5xl sm:first-letter:text-6xl first-letter:leading-[0.85] first-letter:text-[var(--accent)]"
+                        : ""
+                    }
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            )}
 
-          {introduction.photo && (
-            <div className="mt-14 sm:mt-16">
-              <PhotoFrame
-                photo={introduction.photo}
-                onExpand={(photo) => onExpandPhoto?.(photo)}
-              />
-            </div>
-          )}
+            {introduction.photo && (
+              <div className="mt-14 sm:mt-16">
+                <PhotoFrame
+                  photo={introduction.photo}
+                  onExpand={(photo) => onExpandPhoto?.(photo)}
+                />
+              </div>
+            )}
+          </div>
 
           {introduction.afterPhotoParagraphs &&
             introduction.afterPhotoParagraphs.length > 0 && (
