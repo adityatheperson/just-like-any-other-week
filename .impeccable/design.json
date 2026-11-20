@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-19T00:00:00.000Z",
+  "title": "Design System: Just Like Any Other Week",
+  "extensions": {
+    "colorMeta": {
+      "paper-cream": {
+        "role": "neutral",
+        "displayName": "Sun-Bleached Paper Cream",
+        "canonical": "#FAF8F3",
+        "tonalRamp": ["#26231D", "#454037", "#686054", "#8F8576", "#B7AD9D", "#DDD4C6", "#F2ECE1", "#FAF8F3"]
+      },
+      "ink-charcoal": {
+        "role": "neutral",
+        "displayName": "Charcoal Ink",
+        "canonical": "#1C1A17",
+        "tonalRamp": ["#141412", "#1C1A17", "#33302B", "#4F4940", "#6E665B", "#9A9184", "#CFC7BA", "#F5F2EB"]
+      },
+      "sienna-accent": {
+        "role": "primary",
+        "displayName": "Sienna Earth Accent",
+        "canonical": "#7A5438",
+        "tonalRamp": ["#2A1B11", "#452D1D", "#60402A", "#7A5438", "#996E4E", "#B88F70", "#D7B89E", "#F0E0D3"]
+      },
+      "alpine-pine": {
+        "role": "secondary",
+        "displayName": "Alpine Pine Accent",
+        "canonical": "#3C5A52",
+        "tonalRamp": ["#16221F", "#223530", "#2F4741", "#3C5A52", "#53766D", "#73968D", "#A3BEB7", "#DDE7E4"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display Serif", "purpose": "Hero memoir title across all three editions." },
+      "headline": { "displayName": "Chapter Headline", "purpose": "Chapter titles paired with tabular chapter numbers." },
+      "title": { "displayName": "Italic Epigraph & Pull Quote", "purpose": "Chapter theme statements and reflective hiking quotations." },
+      "body": { "displayName": "Narrative Body", "purpose": "Long-form memoir paragraphs constrained to 66ch measure." },
+      "label": { "displayName": "Catalog Mono Label", "purpose": "Figure captions, file path placeholders, and edition switcher buttons." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-editorial", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Restrained exponential ease-out for scroll reveals." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Edition Switcher Button",
+      "kind": "button",
+      "refersTo": "edition-switch-active",
+      "description": "Switches live between Edition A (Sun-Bleached), Edition B (Darkroom), and Edition C (Alpine).",
+      "html": "<button class=\"ds-edition-btn\">A · SUN-BLEACHED</button>",
+      "css": ".ds-edition-btn { background: #1C1A17; color: #FAF8F3; padding: 6px 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #1C1A17; border-radius: 0; cursor: pointer; transition: background 0.2s, color 0.2s; } .ds-edition-btn:hover { background: #7A5438; border-color: #7A5438; } .ds-edition-btn:focus-visible { outline: 2px solid #7A5438; outline-offset: 3px; }"
+    },
+    {
+      "name": "Field Recording Audio Strip",
+      "kind": "custom",
+      "refersTo": "audio-play-button",
+      "description": "Unobtrusive inline chapter audio control for ambient river and trail recordings.",
+      "html": "<div class=\"ds-audio-strip\"><button class=\"ds-audio-btn\" aria-label=\"Play\">&#9654;</button><div><div class=\"ds-audio-title\">Field Recording — River Current</div><div class=\"ds-audio-meta\">00:45 · public/audio/ch2-river-ambient.mp3</div></div></div>",
+      "css": ".ds-audio-strip { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: #F2ECE1; border-top: 1px solid rgba(28,26,23,0.32); border-bottom: 1px solid rgba(28,26,23,0.32); color: #1C1A17; } .ds-audio-btn { width: 36px; height: 36px; border: 1px solid rgba(28,26,23,0.32); background: #FAF8F3; color: #1C1A17; cursor: pointer; transition: background 0.2s, color 0.2s; } .ds-audio-btn:hover { background: #1C1A17; color: #FAF8F3; } .ds-audio-title { font-family: 'Instrument Serif', Georgia, serif; font-size: 18px; } .ds-audio-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E665B; text-transform: uppercase; letter-spacing: 0.06em; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Three-Edition Photo Monograph",
+    "overview": "Just Like Any Other Week is designed as an intimate, long-scroll literary photo essay rather than a conventional web application. It treats personal memory with the quiet authority of a printed monograph, allowing the reader to experience the same narrative across three switchable visual editions: A · Sun-Bleached Editorial, B · Cinematic Darkroom, and C · Alpine Field Notes.",
+    "keyCharacteristics": [
+      "Three live-switchable CSS custom-property editions sharing one centralized narrative schema (src/data/memoir.ts).",
+      "Square-cornered (0px radius) photographic plates with honest, unfabricated architectural placeholders.",
+      "Tempo-aware Motion reveals with full prefers-reduced-motion compliance."
+    ],
+    "rules": [
+      {
+        "name": "The Honest Plate Rule",
+        "body": "Photographic and video containers never display fabricated stock memories; until the author's real files exist in public/, plates render as warm tonal contact frames with technical crop lines and explicit file-path captions.",
+        "section": "colors"
+      },
+      {
+        "name": "The 66-Character Measure Rule",
+        "body": "Long-form memoir paragraphs are constrained to .editorial-measure (66ch) inside a centered max-w-3xl column so the eye never loses its place across 2,000 words of narrative.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hairline-And-Paper Rule",
+        "body": "Depth is communicated through paper tone steps and crisp 1px borders, never soft card drop shadows or blurred glass panels.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep all written narrative, captions, and file paths centralized in src/data/memoir.ts.",
+      "Do preserve 0px print-plate corners and 1px hairline dividers across all media frames.",
+      "Do respect prefers-reduced-motion on all scroll reveals, parallax transforms, and carousel scrolling."
+    ],
+    "donts": [
+      "Don't insert fabricated personal photographs, stock people, or invented dialogue into the memoir.",
+      "Don't wrap paragraphs or photos in rounded, shadowed SaaS cards.",
+      "Don't enable autoplay with sound on any video or audio clip."
+    ]
+  }
+}
