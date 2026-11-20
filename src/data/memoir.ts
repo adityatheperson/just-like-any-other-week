@@ -106,7 +106,11 @@ export const memoirData: MemoirContent = {
     heading: "Prologue — Before Everything Changed",
     epigraph:
       "During the summer before college, ten of my closest friends and I spent a week together at Lake Tahoe.",
-    paragraphs: [],
+    paragraphs: [
+      "I woke up to “From the Start” by Laufey at 7 a.m. on June 13th. The day had finally come, it was the day that I had been waiting for but also had been dreading. It was the start of our senior trip, a trip where we hoped to make memories that would last a lifetime. The night before, I couldn’t sleep, I couldn’t stop thinking that after this trip, we would all go our separate ways.",
+      "However, as my friends started to reach my house, that feeling went away. We had planned on meeting at 9:30 a.m., but as usual, some people were late. Our parents met each other and discussed a few things while we all loaded the cars. Eleven people were going on this trip, in two separate cars, for a week, on a road trip down to Lake Tahoe and then Yosemite.",
+      "Even though we knew this might be our last adventure together, that feeling was not something looming over our heads. We were rather occupied with how to arrange all the bags so that they fit in the cars. And at 10:30 a.m., we began driving!",
+    ],
   },
 
   chapters: [
