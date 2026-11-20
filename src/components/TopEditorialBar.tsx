@@ -39,10 +39,6 @@ export function TopEditorialBar({
               <span>Back to Landing Page</span>
             </button>
           )}
-
-          <span className="hidden sm:inline-block font-mono text-[11px] uppercase tracking-widest text-[var(--fg-muted)]">
-            Summer 2026
-          </span>
         </div>
       </div>
     </header>

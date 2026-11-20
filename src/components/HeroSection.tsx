@@ -68,7 +68,7 @@ export function HeroSection({
         >
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-[var(--fg-muted)]">
-              {data.meta.subtitle} · {data.meta.locationAndDate}
+              {data.meta.subtitle}
             </p>
             <h1 className="mt-3 font-serif text-5xl sm:text-7xl lg:text-[5.5rem] leading-[0.96] tracking-[-0.025em] text-[var(--fg-primary)]">
               {data.meta.title}
