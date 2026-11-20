@@ -1,3 +1,15 @@
+export interface PhotoAnnotation {
+  label: string;
+  /** Center of circle (% of frame width/height) */
+  circleX: number;
+  circleY: number;
+  circleRx: number;
+  circleRy: number;
+  /** Label position (% of frame width/height) */
+  labelX: number;
+  labelY: number;
+}
+
 export interface PhotoAsset {
   id: string;
   src: string;
@@ -7,6 +19,7 @@ export interface PhotoAsset {
   caption?: string;
   aspect: "wide" | "portrait" | "square" | "cinematic" | "panoramic";
   size?: "large" | "medium" | "small" | "full";
+  annotation?: PhotoAnnotation;
 }
 
 export interface VideoAsset {
@@ -164,7 +177,16 @@ export const memoirData: MemoirContent = {
       label: "Romir's Surprise Birthday",
       expectedContent: "Romir cutting his birthday cake at the dining table",
       aspect: "portrait",
-      size: "full",
+      size: "medium",
+      annotation: {
+        label: "Romir",
+        circleX: 33,
+        circleY: 46,
+        circleRx: 14,
+        circleRy: 11,
+        labelX: 54,
+        labelY: 31,
+      },
     },
   },
 

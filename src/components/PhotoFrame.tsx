@@ -132,6 +132,68 @@ export function PhotoFrame({
           </motion.div>
         )}
 
+        {hasRealImage && !imageError && photo.annotation && (
+          <div className="pointer-events-none absolute inset-0 z-10">
+            <svg
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              className="h-full w-full"
+            >
+              <defs>
+                <marker
+                  id={`arrow-${photo.id}`}
+                  viewBox="0 0 10 10"
+                  refX="7"
+                  refY="5"
+                  markerWidth="4.5"
+                  markerHeight="4.5"
+                  orient="auto-start-reverse"
+                >
+                  <path
+                    d="M 0 1.5 L 8 5 L 0 8.5 z"
+                    fill="#FAF8F3"
+                  />
+                </marker>
+              </defs>
+
+              {/* Highlight circle around the person */}
+              <ellipse
+                cx={photo.annotation.circleX}
+                cy={photo.annotation.circleY}
+                rx={photo.annotation.circleRx}
+                ry={photo.annotation.circleRy}
+                fill="none"
+                stroke="#FAF8F3"
+                strokeWidth="0.7"
+                strokeDasharray="2.2 1.4"
+              />
+
+              {/* Curved pointer arrow from label to circle */}
+              <path
+                d={`M ${photo.annotation.labelX - 2} ${photo.annotation.labelY + 1} Q ${
+                  photo.annotation.labelX - 10
+                } ${photo.annotation.labelY + 2} ${
+                  photo.annotation.circleX + photo.annotation.circleRx * 0.78
+                } ${photo.annotation.circleY - photo.annotation.circleRy * 0.65}`}
+                fill="none"
+                stroke="#FAF8F3"
+                strokeWidth="0.7"
+                markerEnd={`url(#arrow-${photo.id})`}
+              />
+            </svg>
+
+            <span
+              style={{
+                left: `${photo.annotation.labelX}%`,
+                top: `${photo.annotation.labelY}%`,
+              }}
+              className="absolute -translate-y-1/2 bg-[#141412]/85 text-[#FAF8F3] border border-[#FAF8F3]/40 px-2.5 py-0.5 font-serif italic text-base sm:text-lg tracking-wide shadow-sm"
+            >
+              {photo.annotation.label}
+            </span>
+          </div>
+        )}
+
         {hasRealImage && !imageError && (
           <div className="absolute bottom-3 right-3 bg-[#141412]/75 text-[#FAF8F3] px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wider flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
             <span>Expand</span>

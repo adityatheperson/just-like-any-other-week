@@ -500,7 +500,7 @@ export function IntroductionSection({
             )}
 
           {introduction.secondPhoto && (
-            <div className="mt-14 sm:mt-16 max-w-2xl mx-auto">
+            <div className="mt-12 sm:mt-14 max-w-md mx-auto">
               <PhotoFrame
                 photo={introduction.secondPhoto}
                 onExpand={(photo) => onExpandPhoto?.(photo)}
