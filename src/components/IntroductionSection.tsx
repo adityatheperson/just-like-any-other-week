@@ -534,6 +534,24 @@ export function IntroductionSection({
               }}
             />
           )}
+
+          {introduction.afterVideoParagraphs &&
+            introduction.afterVideoParagraphs.length > 0 && (
+              <div className="mt-12 sm:mt-14 space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
+                {introduction.afterVideoParagraphs.map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
+              </div>
+            )}
+
+          {introduction.thirdPhoto && (
+            <div className="mt-12 sm:mt-14">
+              <PhotoFrame
+                photo={introduction.thirdPhoto}
+                onExpand={(photo) => onExpandPhoto?.(photo)}
+              />
+            </div>
+          )}
         </motion.article>
       </div>
     </section>

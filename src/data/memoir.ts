@@ -83,6 +83,8 @@ export interface MemoirContent {
     secondPhoto?: PhotoAsset;
     afterSecondPhotoParagraphs?: string[];
     video?: VideoAsset;
+    afterVideoParagraphs?: string[];
+    thirdPhoto?: PhotoAsset;
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -201,6 +203,18 @@ export const memoirData: MemoirContent = {
       label: "Romir's Surprise Birthday Video",
       expectedContent: "Video of Romir coming upstairs to the surprise birthday party",
       aspect: "portrait",
+    },
+    afterVideoParagraphs: [
+      "Looking back, it was really easy to convince everyone to commit to the surprise. Everything was really smooth and fell into place. We had spent years celebrating, making memories, and strengthening bonds. This specific event was not any different. It felt like one of those 100 events that we did in the past. We weren’t concerned about college, about future careers, or about anything but planning the surprise. We were there, celebrating another birthday, just like we always had.",
+    ],
+    thirdPhoto: {
+      id: "birthday-celebration",
+      src: "/images/birthday-celebration.jpg",
+      alt: "Friends celebrating Romir's surprise birthday together",
+      label: "Birthday Celebration",
+      expectedContent: "Friends celebrating Romir's surprise birthday together",
+      aspect: "wide",
+      size: "full",
     },
   },
 
