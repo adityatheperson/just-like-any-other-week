@@ -10,17 +10,17 @@ interface IntroductionSectionProps {
 }
 
 const STORAGE_KEY = "memoir_laufey_progress_sec";
-const TARGET_VOLUME = 0.18; // Quiet background ambiance (18%)
+const TARGET_VOLUME = 0.18;
 
 export function IntroductionSection({ introduction }: IntroductionSectionProps) {
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const inViewRef = useRef<boolean>(false);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
-  const [needsInteraction, setNeedsInteraction] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -64,7 +64,7 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
     }
   };
 
-  // IntersectionObserver: play quietly when reading this section, pause when leaving
+  // Autoplay when reader is in this section, pause & save when they leave
   useEffect(() => {
     const section = sectionRef.current;
     const audio = audioRef.current;
@@ -72,16 +72,14 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
 
     audio.volume = TARGET_VOLUME;
 
-    const tryPlay = async () => {
-      if (userPaused) return;
+    const attemptAutoPlay = async () => {
+      if (userPaused || !inViewRef.current) return;
       try {
         audio.volume = TARGET_VOLUME;
         await audio.play();
         setIsPlaying(true);
-        setNeedsInteraction(false);
       } catch {
-        // Browser blocked unmuted autoplay until first user gesture
-        setNeedsInteraction(true);
+        // Browser requires an interaction gesture before unmuted audio can play
       }
     };
 
@@ -89,8 +87,10 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
       (entries) => {
         const entry = entries[0];
         if (!entry) return;
+        inViewRef.current = entry.isIntersecting;
+
         if (entry.isIntersecting) {
-          tryPlay();
+          attemptAutoPlay();
         } else {
           if (!audio.paused) {
             try {
@@ -103,46 +103,33 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
           }
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     );
 
     observer.observe(section);
-    return () => observer.disconnect();
-  }, [userPaused]);
 
-  // If browser blocked initial autoplay, start quietly on the reader's first click/scroll/key gesture while in view
-  useEffect(() => {
-    if (!needsInteraction || userPaused) return;
-
-    const unlockAudio = async () => {
-      const audio = audioRef.current;
-      const section = sectionRef.current;
-      if (!audio || !section) return;
-
-      const rect = section.getBoundingClientRect();
-      const inView = rect.top < window.innerHeight * 0.85 && rect.bottom > 100;
-      if (!inView) return;
-
-      try {
-        audio.volume = TARGET_VOLUME;
-        await audio.play();
-        setIsPlaying(true);
-        setNeedsInteraction(false);
-      } catch {
-        // still blocked
+    // Unlock and autoplay on any scroll, wheel, mousemove, touch, or key press while inside the section
+    const handleUserActivity = () => {
+      if (inViewRef.current && audio.paused && !userPaused) {
+        attemptAutoPlay();
       }
     };
 
-    window.addEventListener("pointerdown", unlockAudio, { passive: true });
-    window.addEventListener("keydown", unlockAudio, { passive: true });
-    window.addEventListener("touchstart", unlockAudio, { passive: true });
+    window.addEventListener("scroll", handleUserActivity, { passive: true });
+    window.addEventListener("wheel", handleUserActivity, { passive: true });
+    window.addEventListener("pointerdown", handleUserActivity, { passive: true });
+    window.addEventListener("touchstart", handleUserActivity, { passive: true });
+    window.addEventListener("keydown", handleUserActivity, { passive: true });
 
     return () => {
-      window.removeEventListener("pointerdown", unlockAudio);
-      window.removeEventListener("keydown", unlockAudio);
-      window.removeEventListener("touchstart", unlockAudio);
+      observer.disconnect();
+      window.removeEventListener("scroll", handleUserActivity);
+      window.removeEventListener("wheel", handleUserActivity);
+      window.removeEventListener("pointerdown", handleUserActivity);
+      window.removeEventListener("touchstart", handleUserActivity);
+      window.removeEventListener("keydown", handleUserActivity);
     };
-  }, [needsInteraction, userPaused]);
+  }, [userPaused]);
 
   const togglePlayPause = async () => {
     const audio = audioRef.current;
@@ -163,7 +150,6 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
       try {
         await audio.play();
         setIsPlaying(true);
-        setNeedsInteraction(false);
       } catch {
         // ignore
       }
@@ -192,6 +178,7 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
       <audio
         ref={audioRef}
         src={audioSrc}
+        autoPlay
         loop
         preload="auto"
         onLoadedMetadata={handleLoadedMetadata}
@@ -217,14 +204,14 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
               )}
             </button>
             <span className="tracking-wider uppercase text-[11px] text-[var(--fg-secondary)]">
-              Now Playing Quietly: <strong className="font-medium text-[var(--fg-primary)]">“From the Start” — Laufey</strong>
+              Now Playing: <strong className="font-medium text-[var(--fg-primary)]">“From the Start” — Laufey</strong>
             </span>
           </div>
 
           <div className="flex items-center gap-3 tabular-nums text-[11px]">
             <span>
               {formatTime(currentTime)}
-              {duration ? ` / ${formatTime(duration)}` : ""} · Saved
+              {duration ? ` / ${formatTime(duration)}` : ""}
             </span>
             <button
               type="button"
