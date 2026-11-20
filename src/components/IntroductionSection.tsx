@@ -203,32 +203,37 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
       fadeInPlay();
     };
 
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        cancelFade();
-        if (!audio.paused) {
-          try {
-            localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
-          } catch {
-            // ignore
-          }
-          audio.pause();
-          setIsPlaying(false);
+    const pauseOnLeave = () => {
+      cancelFade();
+      if (!audio.paused) {
+        try {
+          localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
+        } catch {
+          // ignore
         }
-      } else if (inViewRef.current && !userPaused) {
+        audio.pause();
+        setIsPlaying(false);
+      }
+    };
+
+    const resumeOnReturn = () => {
+      if (!document.hidden && inViewRef.current && !userPaused) {
         fadeInPlay();
       }
     };
 
-    const handleWindowBlur = () => {
-      if (document.hidden) {
-        handleVisibilityChange();
+    const handleVisibilityChange = () => {
+      if (document.hidden || document.visibilityState === "hidden") {
+        pauseOnLeave();
+      } else {
+        resumeOnReturn();
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("pagehide", handleVisibilityChange);
-    window.addEventListener("blur", handleWindowBlur);
+    window.addEventListener("pagehide", pauseOnLeave);
+    window.addEventListener("blur", pauseOnLeave);
+    window.addEventListener("focus", resumeOnReturn);
     window.addEventListener("memoir:begin-reading", handleBeginReading);
     window.addEventListener("click", handleUnlockGesture, { passive: true });
     window.addEventListener("pointerdown", handleUnlockGesture, { passive: true });
@@ -238,8 +243,9 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
     return () => {
       observer.disconnect();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("pagehide", handleVisibilityChange);
-      window.removeEventListener("blur", handleWindowBlur);
+      window.removeEventListener("pagehide", pauseOnLeave);
+      window.removeEventListener("blur", pauseOnLeave);
+      window.removeEventListener("focus", resumeOnReturn);
       window.removeEventListener("memoir:begin-reading", handleBeginReading);
       window.removeEventListener("click", handleUnlockGesture);
       window.removeEventListener("pointerdown", handleUnlockGesture);
