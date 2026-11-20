@@ -552,6 +552,8 @@ export function IntroductionSection({
               />
             </div>
           )}
+
+          <hr className="my-14 sm:my-16 border-0 border-t border-[var(--border-strong)]" />
         </motion.article>
       </div>
     </section>
