@@ -15,7 +15,10 @@ export default function MemoirPage() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--fg-primary)]">
-      <TopEditorialBar onReturnHome={() => setHasBegunReading(false)} />
+      <TopEditorialBar
+        showBackButton={hasBegunReading}
+        onReturnHome={() => setHasBegunReading(false)}
+      />
 
       <main>
         <AnimatePresence mode="wait">
