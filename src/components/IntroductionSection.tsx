@@ -24,9 +24,9 @@ export function IntroductionSection({
 }: IntroductionSectionProps) {
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
-  const introTopZoneRef = useRef<HTMLDivElement>(null);
+  const stopTriggerRef = useRef<HTMLParagraphElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const inViewRef = useRef<boolean>(false);
+  const inViewRef = useRef<boolean>(true);
   const fadeRafRef = useRef<number | null>(null);
   const targetVolumeRef = useRef<number>(DEFAULT_VOLUME);
 
@@ -175,28 +175,31 @@ export function IntroductionSection({
   };
 
   useEffect(() => {
-    const topZone = introTopZoneRef.current;
     const audio = audioRef.current;
-    if (!topZone || !audio) return;
+    if (!audio) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (!entry) return;
-        inViewRef.current = entry.isIntersecting;
+    const checkScrollStop = () => {
+      const triggerEl = stopTriggerRef.current;
+      if (!triggerEl) return;
 
-        if (entry.isIntersecting) {
-          if (!userPaused) {
-            fadeInPlay();
-          }
-        } else {
+      const rect = triggerEl.getBoundingClientRect();
+      // As soon as the reader scrolls down so the 3rd paragraph passes the upper-middle of the screen (or scrolls past it), stop the music
+      const passedThirdParagraph = rect.top <= window.innerHeight * 0.45;
+      inViewRef.current = !passedThirdParagraph;
+
+      if (passedThirdParagraph) {
+        if (!audio.paused) {
           fadeOutPause();
         }
-      },
-      { threshold: 0.05 }
-    );
+      } else {
+        if (!userPaused && audio.paused && !document.hidden) {
+          fadeInPlay();
+        }
+      }
+    };
 
-    observer.observe(topZone);
+    checkScrollStop();
+    window.addEventListener("scroll", checkScrollStop, { passive: true });
 
     const handleUnlockGesture = () => {
       if (userPaused || !inViewRef.current) return;
@@ -248,7 +251,7 @@ export function IntroductionSection({
     window.addEventListener("keydown", handleUnlockGesture, { passive: true });
 
     return () => {
-      observer.disconnect();
+      window.removeEventListener("scroll", checkScrollStop);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("pagehide", pauseOnLeave);
       window.removeEventListener("blur", pauseOnLeave);
@@ -456,24 +459,18 @@ export function IntroductionSection({
         >
           {introduction.paragraphs.length > 0 && (
             <div className="space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
-              {/* Audio zone covers only the first two paragraphs */}
-              <div ref={introTopZoneRef} className="space-y-8">
-                {introduction.paragraphs.slice(0, 2).map((paragraph, idx) => (
-                  <p
-                    key={idx}
-                    className={
-                      idx === 0
-                        ? "first-letter:float-left first-letter:mr-3.5 first-letter:mt-1 first-letter:font-serif first-letter:text-5xl sm:first-letter:text-6xl first-letter:leading-[0.85] first-letter:text-[var(--accent)]"
-                        : ""
-                    }
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-
-              {introduction.paragraphs.slice(2).map((paragraph, idx) => (
-                <p key={idx + 2}>{paragraph}</p>
+              {introduction.paragraphs.map((paragraph, idx) => (
+                <p
+                  key={idx}
+                  ref={idx === 2 ? stopTriggerRef : undefined}
+                  className={
+                    idx === 0
+                      ? "first-letter:float-left first-letter:mr-3.5 first-letter:mt-1 first-letter:font-serif first-letter:text-5xl sm:first-letter:text-6xl first-letter:leading-[0.85] first-letter:text-[var(--accent)]"
+                      : ""
+                  }
+                >
+                  {paragraph}
+                </p>
               ))}
             </div>
           )}
