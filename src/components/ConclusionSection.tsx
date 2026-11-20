@@ -40,28 +40,32 @@ export function ConclusionSection({
         </motion.div>
 
         {/* Large Group Photograph */}
-        <div className="my-14 sm:my-20">
-          <PhotoFrame
-            photo={conclusion.groupPhoto}
-            onExpand={onExpandPhoto}
-            parallax
-          />
-        </div>
+        {conclusion.groupPhoto && (
+          <div className="my-14 sm:my-20">
+            <PhotoFrame
+              photo={conclusion.groupPhoto}
+              onExpand={onExpandPhoto}
+              parallax
+            />
+          </div>
+        )}
 
         {/* Short Closing Reflection */}
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-3xl"
-        >
-          <div className="space-y-6 editorial-measure text-base sm:text-lg leading-[1.82] text-[var(--fg-primary)]">
-            {conclusion.paragraphs.map((para, idx) => (
-              <p key={idx}>{para}</p>
-            ))}
-          </div>
-        </motion.div>
+        {conclusion.paragraphs.length > 0 && (
+          <motion.div
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto max-w-3xl mt-12"
+          >
+            <div className="space-y-6 editorial-measure text-base sm:text-lg leading-[1.82] text-[var(--fg-primary)]">
+              {conclusion.paragraphs.map((para, idx) => (
+                <p key={idx}>{para}</p>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* Subtle Ending Sign-Off */}
         <motion.div

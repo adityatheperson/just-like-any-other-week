@@ -45,13 +45,15 @@ export function HeroSection({ data, onExpandPhoto }: HeroSectionProps) {
           </div>
         </motion.div>
 
-        <div className="mt-8 sm:mt-12">
-          <PhotoFrame
-            photo={data.hero.photo}
-            onExpand={onExpandPhoto}
-            parallax
-          />
-        </div>
+        {data.hero.photo && (
+          <div className="mt-8 sm:mt-12">
+            <PhotoFrame
+              photo={data.hero.photo}
+              onExpand={onExpandPhoto}
+              parallax
+            />
+          </div>
+        )}
 
         <div className="mt-8 flex flex-wrap items-center justify-between gap-4 font-mono text-xs uppercase tracking-widest text-[var(--fg-secondary)]">
           <span>{data.meta.themeTitle} · Eleven Friends</span>

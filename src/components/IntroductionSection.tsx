@@ -32,11 +32,13 @@ export function IntroductionSection({ introduction, chapters }: IntroductionSect
             &ldquo;{introduction.epigraph}&rdquo;
           </p>
 
-          <div className="mt-10 space-y-6 editorial-measure text-base sm:text-lg leading-[1.78] text-[var(--fg-primary)]">
-            {introduction.paragraphs.map((paragraph, idx) => (
-              <p key={idx}>{paragraph}</p>
-            ))}
-          </div>
+          {introduction.paragraphs.length > 0 && (
+            <div className="mt-10 space-y-6 editorial-measure text-base sm:text-lg leading-[1.78] text-[var(--fg-primary)]">
+              {introduction.paragraphs.map((paragraph, idx) => (
+                <p key={idx}>{paragraph}</p>
+              ))}
+            </div>
+          )}
 
           {/* Chapter index preview */}
           <div className="mt-16 border-t border-[var(--border-subtle)] pt-8">

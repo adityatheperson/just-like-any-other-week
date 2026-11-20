@@ -20,7 +20,6 @@ export function ChapterSection({
   const prefersReducedMotion = useReducedMotion();
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  /* Tempo-driven transition speed: Chapter 1 warm, Chapter 2 energetic, Chapter 3 slower/contemplative */
   const revealDuration =
     chapter.tempo === "contemplative"
       ? 1.05
@@ -37,11 +36,12 @@ export function ChapterSection({
     });
   };
 
-  /* Vertical spacing scales up for Chapter 3 (Perspective) to feel spacious and minimal */
   const sectionPadding =
     chapter.tempo === "contemplative"
-      ? "py-24 sm:py-36"
-      : "py-20 sm:py-28";
+      ? "py-24 sm:py-32"
+      : "py-20 sm:py-24";
+
+  const hasGallery = chapter.gallery.length > 0;
 
   return (
     <section
@@ -77,15 +77,17 @@ export function ChapterSection({
         </motion.div>
 
         {/* Opening Full-Width Photograph */}
-        <div className="mt-10 sm:mt-14">
-          <PhotoFrame
-            photo={chapter.openingPhoto}
-            onExpand={onExpandPhoto}
-            parallax
-          />
-        </div>
+        {chapter.openingPhoto && (
+          <div className="mt-10 sm:mt-14">
+            <PhotoFrame
+              photo={chapter.openingPhoto}
+              onExpand={onExpandPhoto}
+              parallax
+            />
+          </div>
+        )}
 
-        {/* Optional Audio Bar (Chapter 2 & Chapter 3) */}
+        {/* Optional Audio Bar */}
         {chapter.audio && (
           <div className="mx-auto max-w-4xl mt-10">
             <AudioClipBar audio={chapter.audio} />
@@ -93,21 +95,23 @@ export function ChapterSection({
         )}
 
         {/* Opening Written Narrative */}
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: revealDuration, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-3xl mt-12 sm:mt-16"
-        >
-          <div className="space-y-6 editorial-measure text-base sm:text-lg leading-[1.8] text-[var(--fg-primary)]">
-            {chapter.openingParagraphs.map((para, idx) => (
-              <p key={idx}>{para}</p>
-            ))}
-          </div>
-        </motion.div>
+        {chapter.openingParagraphs.length > 0 && (
+          <motion.div
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: revealDuration, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto max-w-3xl mt-12 sm:mt-16"
+          >
+            <div className="space-y-6 editorial-measure text-base sm:text-lg leading-[1.8] text-[var(--fg-primary)]">
+              {chapter.openingParagraphs.map((para, idx) => (
+                <p key={idx}>{para}</p>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
-        {/* Reflective Quotation 1 for Chapter 3 (Perspective) */}
+        {/* Reflective Quotation 1 */}
         {chapter.pullQuotes && chapter.pullQuotes[0] && (
           <blockquote className="mx-auto max-w-4xl my-16 sm:my-24 border-y border-[var(--border-subtle)] py-10 sm:py-14 text-center">
             <p className="font-serif text-2xl sm:text-4xl italic leading-snug text-[var(--fg-primary)]">
@@ -116,8 +120,8 @@ export function ChapterSection({
           </blockquote>
         )}
 
-        {/* GALLERY TYPE 1: Asymmetrical Mixed-Size Editorial Gallery (Chapter 1 — Familiarity) */}
-        {chapter.galleryType === "asymmetrical" && (
+        {/* GALLERY TYPE 1: Asymmetrical Mixed-Size Editorial Gallery */}
+        {hasGallery && chapter.galleryType === "asymmetrical" && (
           <div className="my-16 sm:my-20 grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
             {chapter.gallery[0] && (
               <div className="lg:col-span-7">
@@ -154,8 +158,8 @@ export function ChapterSection({
           </div>
         )}
 
-        {/* GALLERY TYPE 2: Horizontal Photo Gallery / Carousel (Chapter 2 — The Present) */}
-        {chapter.galleryType === "horizontal-carousel" && (
+        {/* GALLERY TYPE 2: Horizontal Photo Gallery / Carousel */}
+        {hasGallery && chapter.galleryType === "horizontal-carousel" && (
           <div className="my-16 sm:my-20">
             <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4 mb-6">
               <div>
@@ -205,8 +209,8 @@ export function ChapterSection({
           </div>
         )}
 
-        {/* GALLERY TYPE 3: Spacious Landscape Plates (Chapter 3 — Perspective) */}
-        {chapter.galleryType === "spacious-landscape" && (
+        {/* GALLERY TYPE 3: Spacious Landscape Plates */}
+        {hasGallery && chapter.galleryType === "spacious-landscape" && (
           <div className="my-16 sm:my-24 space-y-16 sm:space-y-24">
             {chapter.gallery[0] && (
               <PhotoFrame
@@ -218,23 +222,25 @@ export function ChapterSection({
           </div>
         )}
 
-        {/* Mid Narrative Section (interleaved between visuals) */}
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: revealDuration, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-3xl my-12 sm:my-16"
-        >
-          <div className="space-y-6 editorial-measure text-base sm:text-lg leading-[1.8] text-[var(--fg-primary)]">
-            {chapter.midParagraphs.map((para, idx) => (
-              <p key={idx}>{para}</p>
-            ))}
-          </div>
-        </motion.div>
+        {/* Mid Narrative Section */}
+        {chapter.midParagraphs.length > 0 && (
+          <motion.div
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: revealDuration, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto max-w-3xl my-12 sm:my-16"
+          >
+            <div className="space-y-6 editorial-measure text-base sm:text-lg leading-[1.8] text-[var(--fg-primary)]">
+              {chapter.midParagraphs.map((para, idx) => (
+                <p key={idx}>{para}</p>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
-        {/* Second Landscape Plate + Second Pull Quote for Chapter 3 */}
-        {chapter.galleryType === "spacious-landscape" && chapter.gallery[1] && (
+        {/* Second Landscape Plate */}
+        {hasGallery && chapter.galleryType === "spacious-landscape" && chapter.gallery[1] && (
           <div className="mx-auto max-w-5xl my-16 sm:my-24">
             <PhotoFrame
               photo={chapter.gallery[1]}
@@ -259,19 +265,21 @@ export function ChapterSection({
         )}
 
         {/* Closing Chapter Narrative */}
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: revealDuration, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-3xl mt-12 sm:mt-16"
-        >
-          <div className="space-y-6 editorial-measure text-base sm:text-lg leading-[1.8] text-[var(--fg-primary)]">
-            {chapter.closingParagraphs.map((para, idx) => (
-              <p key={idx}>{para}</p>
-            ))}
-          </div>
-        </motion.div>
+        {chapter.closingParagraphs.length > 0 && (
+          <motion.div
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: revealDuration, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto max-w-3xl mt-12 sm:mt-16"
+          >
+            <div className="space-y-6 editorial-measure text-base sm:text-lg leading-[1.8] text-[var(--fg-primary)]">
+              {chapter.closingParagraphs.map((para, idx) => (
+                <p key={idx}>{para}</p>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   );
