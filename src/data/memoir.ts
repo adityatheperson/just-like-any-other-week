@@ -25,11 +25,12 @@ export interface PhotoAsset {
 export interface VideoAsset {
   id: string;
   src: string;
-  poster: string;
+  poster?: string;
   label: string;
   expectedContent: string;
   caption?: string;
   mutedLoop?: boolean;
+  aspect?: "wide" | "portrait";
 }
 
 export interface AudioAsset {
@@ -80,6 +81,8 @@ export interface MemoirContent {
     photo?: PhotoAsset;
     afterPhotoParagraphs?: string[];
     secondPhoto?: PhotoAsset;
+    afterSecondPhotoParagraphs?: string[];
+    video?: VideoAsset;
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -187,6 +190,17 @@ export const memoirData: MemoirContent = {
         labelX: 54,
         labelY: 31,
       },
+    },
+    afterSecondPhotoParagraphs: [
+      "The way we called him upstairs was by telling him that there was a huge bear outside the house. He bolted up the stairs, expecting to see a massive animal, but instead, he just saw a cake with ten people around it. I could see his expression change in real time. It went from an excited one to one of shock, then he smiled.",
+    ],
+    video: {
+      id: "romir-surprise-video",
+      src: "/videos/romir-surprise.mp4",
+      poster: "/images/romir-birthday.jpg",
+      label: "Romir's Surprise Birthday Video",
+      expectedContent: "Video of Romir coming upstairs to the surprise birthday party",
+      aspect: "portrait",
     },
   },
 

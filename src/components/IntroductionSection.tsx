@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { Volume2, VolumeX, Play, Pause } from "lucide-react";
 import type { MemoirContent, PhotoAsset } from "@/data/memoir";
 import { PhotoFrame } from "./PhotoFrame";
+import { VideoPlayerBlock } from "./VideoPlayerBlock";
 
 interface IntroductionSectionProps {
   introduction: MemoirContent["introduction"];
@@ -506,6 +507,27 @@ export function IntroductionSection({
                 onExpand={(photo) => onExpandPhoto?.(photo)}
               />
             </div>
+          )}
+
+          {introduction.afterSecondPhotoParagraphs &&
+            introduction.afterSecondPhotoParagraphs.length > 0 && (
+              <div className="mt-12 sm:mt-14 space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
+                {introduction.afterSecondPhotoParagraphs.map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
+              </div>
+            )}
+
+          {introduction.video && (
+            <VideoPlayerBlock
+              video={introduction.video}
+              onPlay={() => {
+                // Smoothly fade out background song if the reader hits play on the video
+                if (isPlaying) {
+                  fadeOutPause();
+                }
+              }}
+            />
           )}
         </motion.article>
       </div>
