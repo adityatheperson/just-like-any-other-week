@@ -454,11 +454,11 @@ export function IntroductionSection({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
         >
-          {/* Audio zone ends right at the divider */}
-          <div ref={introTopZoneRef}>
-            {introduction.paragraphs.length > 0 && (
-              <div className="space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
-                {introduction.paragraphs.map((paragraph, idx) => (
+          {introduction.paragraphs.length > 0 && (
+            <div className="space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
+              {/* Audio zone covers only the first two paragraphs */}
+              <div ref={introTopZoneRef} className="space-y-8">
+                {introduction.paragraphs.slice(0, 2).map((paragraph, idx) => (
                   <p
                     key={idx}
                     className={
@@ -471,17 +471,21 @@ export function IntroductionSection({
                   </p>
                 ))}
               </div>
-            )}
 
-            {introduction.photo && (
-              <div className="mt-14 sm:mt-16">
-                <PhotoFrame
-                  photo={introduction.photo}
-                  onExpand={(photo) => onExpandPhoto?.(photo)}
-                />
-              </div>
-            )}
-          </div>
+              {introduction.paragraphs.slice(2).map((paragraph, idx) => (
+                <p key={idx + 2}>{paragraph}</p>
+              ))}
+            </div>
+          )}
+
+          {introduction.photo && (
+            <div className="mt-14 sm:mt-16">
+              <PhotoFrame
+                photo={introduction.photo}
+                onExpand={(photo) => onExpandPhoto?.(photo)}
+              />
+            </div>
+          )}
 
           {introduction.afterPhotoParagraphs &&
             introduction.afterPhotoParagraphs.length > 0 && (
