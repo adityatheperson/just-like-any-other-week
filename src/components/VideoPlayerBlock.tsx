@@ -23,7 +23,7 @@ export function VideoPlayerBlock({ video, onPlay }: VideoPlayerBlockProps) {
   const isPortrait = video.aspect === "portrait";
 
   return (
-    <figure className={`my-12 sm:my-14 ${isPortrait ? "max-w-md mx-auto" : ""}`}>
+    <figure className={`my-10 sm:my-12 ${isPortrait ? "max-w-[280px] sm:max-w-[320px] mx-auto" : ""}`}>
       <div
         className={`relative w-full overflow-hidden border bg-[#141412] border-[var(--border-subtle)] ${
           isPortrait ? "aspect-[9/16]" : "aspect-[16/9]"
