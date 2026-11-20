@@ -14,7 +14,7 @@ export function TopEditorialBar() {
         </a>
 
         <span className="font-mono text-[11px] uppercase tracking-widest text-[var(--fg-muted)]">
-          Lake Tahoe · Summer 2026
+          Summer 2026
         </span>
       </div>
     </header>

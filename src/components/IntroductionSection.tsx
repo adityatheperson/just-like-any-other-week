@@ -14,23 +14,32 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
   return (
     <section
       id="prologue"
-      className="w-full border-b border-[var(--border-subtle)] px-4 py-20 sm:px-8 sm:py-28"
+      className="w-full px-4 py-16 sm:px-8 sm:py-24"
     >
       <div className="mx-auto max-w-3xl">
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        <motion.article
+          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           {introduction.paragraphs.length > 0 && (
-            <div className="space-y-6 editorial-measure text-base sm:text-lg leading-[1.82] text-[var(--fg-primary)]">
+            <div className="space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
               {introduction.paragraphs.map((paragraph, idx) => (
-                <p key={idx}>{paragraph}</p>
+                <p
+                  key={idx}
+                  className={
+                    idx === 0
+                      ? "first-letter:float-left first-letter:mr-3.5 first-letter:mt-1 first-letter:font-serif first-letter:text-5xl sm:first-letter:text-6xl first-letter:leading-[0.85] first-letter:text-[var(--accent)]"
+                      : ""
+                  }
+                >
+                  {paragraph}
+                </p>
               ))}
             </div>
           )}
-        </motion.div>
+        </motion.article>
       </div>
     </section>
   );

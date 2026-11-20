@@ -12,7 +12,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Just Like Any Other Week — A Senior Trip Memoir",
   description:
-    "A coming-of-age digital photo memoir from Lake Tahoe exploring the illusion of permanence before college.",
+    "A coming-of-age digital photo memoir exploring the illusion of permanence before college.",
 };
 
 export default function RootLayout({

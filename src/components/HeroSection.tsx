@@ -2,16 +2,13 @@
 
 import React from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowDown } from "lucide-react";
-import type { MemoirContent, PhotoAsset } from "@/data/memoir";
-import { PhotoFrame } from "./PhotoFrame";
+import type { MemoirContent } from "@/data/memoir";
 
 interface HeroSectionProps {
   data: MemoirContent;
-  onExpandPhoto: (photo: PhotoAsset) => void;
 }
 
-export function HeroSection({ data, onExpandPhoto }: HeroSectionProps) {
+export function HeroSection({ data }: HeroSectionProps) {
   const prefersReducedMotion = useReducedMotion();
 
   const fadeUp = {
@@ -23,19 +20,19 @@ export function HeroSection({ data, onExpandPhoto }: HeroSectionProps) {
   return (
     <section
       id="top"
-      className="relative w-full border-b border-[var(--border-subtle)] px-4 pt-12 pb-16 sm:px-8 sm:pt-16 sm:pb-24"
+      className="relative w-full border-b border-[var(--border-subtle)] px-4 pt-14 pb-12 sm:px-8 sm:pt-20 sm:pb-16"
     >
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-5xl">
         <motion.div
           {...fadeUp}
-          className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end pb-10 border-b border-[var(--border-subtle)]"
+          className="flex flex-col sm:flex-row sm:items-end justify-between gap-6"
         >
-          <div className="lg:col-span-8">
+          <div>
             <h1 className="font-serif text-5xl sm:text-7xl lg:text-[5.5rem] leading-[0.96] tracking-[-0.025em] text-[var(--fg-primary)]">
               {data.meta.title}
             </h1>
           </div>
-          <div className="lg:col-span-4 lg:text-right flex flex-col lg:items-end justify-end">
+          <div className="sm:text-right flex flex-col sm:items-end justify-end shrink-0">
             <p className="font-serif text-2xl sm:text-3xl italic text-[var(--fg-secondary)]">
               {data.meta.subtitle}
             </p>
@@ -44,27 +41,6 @@ export function HeroSection({ data, onExpandPhoto }: HeroSectionProps) {
             </p>
           </div>
         </motion.div>
-
-        {data.hero.photo && (
-          <div className="mt-8 sm:mt-12">
-            <PhotoFrame
-              photo={data.hero.photo}
-              onExpand={onExpandPhoto}
-              parallax
-            />
-          </div>
-        )}
-
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 font-mono text-xs uppercase tracking-widest text-[var(--fg-secondary)]">
-          <span>{data.meta.themeTitle} · Eleven Friends</span>
-          <a
-            href="#prologue"
-            className="inline-flex items-center gap-2 border-b border-[var(--fg-primary)] pb-0.5 text-[var(--fg-primary)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
-          >
-            <span>{data.hero.scrollPrompt}</span>
-            <ArrowDown className="h-3.5 w-3.5" />
-          </a>
-        </div>
       </div>
     </section>
   );
