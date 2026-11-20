@@ -21,6 +21,7 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
+  const [blockedByBrowser, setBlockedByBrowser] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -64,7 +65,6 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
     }
   };
 
-  // Autoplay when reader is in this section, pause & save when they leave
   useEffect(() => {
     const section = sectionRef.current;
     const audio = audioRef.current;
@@ -72,14 +72,17 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
 
     audio.volume = TARGET_VOLUME;
 
-    const attemptAutoPlay = async () => {
-      if (userPaused || !inViewRef.current) return;
+    const tryPlayWithSound = async () => {
+      if (userPaused) return;
       try {
+        audio.muted = isMuted;
         audio.volume = TARGET_VOLUME;
         await audio.play();
         setIsPlaying(true);
+        setBlockedByBrowser(false);
       } catch {
-        // Browser requires an interaction gesture before unmuted audio can play
+        // Chrome/Safari block unmuted autoplay on fresh reload until 1 click/key/tap occurs
+        setBlockedByBrowser(true);
       }
     };
 
@@ -90,7 +93,7 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
         inViewRef.current = entry.isIntersecting;
 
         if (entry.isIntersecting) {
-          attemptAutoPlay();
+          tryPlayWithSound();
         } else {
           if (!audio.paused) {
             try {
@@ -108,28 +111,58 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
 
     observer.observe(section);
 
-    // Unlock and autoplay on any scroll, wheel, mousemove, touch, or key press while inside the section
-    const handleUserActivity = () => {
-      if (inViewRef.current && audio.paused && !userPaused) {
-        attemptAutoPlay();
-      }
+    // Unlock audio immediately on "Begin Reading" click or any click/tap/keypress anywhere on the page
+    const handleUnlockGesture = () => {
+      if (userPaused) return;
+      audio.muted = isMuted;
+      audio.volume = TARGET_VOLUME;
+      audio
+        .play()
+        .then(() => {
+          setBlockedByBrowser(false);
+          if (!inViewRef.current) {
+            // If they clicked in the hero before scrolling down, prime the audio element so it can play freely once they scroll into the section
+            audio.pause();
+            setIsPlaying(false);
+          } else {
+            setIsPlaying(true);
+          }
+        })
+        .catch(() => {
+          // ignore
+        });
     };
 
-    window.addEventListener("scroll", handleUserActivity, { passive: true });
-    window.addEventListener("wheel", handleUserActivity, { passive: true });
-    window.addEventListener("pointerdown", handleUserActivity, { passive: true });
-    window.addEventListener("touchstart", handleUserActivity, { passive: true });
-    window.addEventListener("keydown", handleUserActivity, { passive: true });
+    const handleBeginReading = () => {
+      setUserPaused(false);
+      audio.muted = isMuted;
+      audio.volume = TARGET_VOLUME;
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+          setBlockedByBrowser(false);
+        })
+        .catch(() => {
+          // ignore
+        });
+    };
+
+    window.addEventListener("memoir:begin-reading", handleBeginReading);
+    window.addEventListener("click", handleUnlockGesture, { passive: true });
+    window.addEventListener("pointerdown", handleUnlockGesture, { passive: true });
+    window.addEventListener("touchstart", handleUnlockGesture, { passive: true });
+    window.addEventListener("keydown", handleUnlockGesture, { passive: true });
 
     return () => {
       observer.disconnect();
-      window.removeEventListener("scroll", handleUserActivity);
-      window.removeEventListener("wheel", handleUserActivity);
-      window.removeEventListener("pointerdown", handleUserActivity);
-      window.removeEventListener("touchstart", handleUserActivity);
-      window.removeEventListener("keydown", handleUserActivity);
+      window.removeEventListener("memoir:begin-reading", handleBeginReading);
+      window.removeEventListener("click", handleUnlockGesture);
+      window.removeEventListener("pointerdown", handleUnlockGesture);
+      window.removeEventListener("touchstart", handleUnlockGesture);
+      window.removeEventListener("keydown", handleUnlockGesture);
     };
-  }, [userPaused]);
+  }, [userPaused, isMuted]);
 
   const togglePlayPause = async () => {
     const audio = audioRef.current;
@@ -146,10 +179,12 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
       }
     } else {
       setUserPaused(false);
+      audio.muted = isMuted;
       audio.volume = TARGET_VOLUME;
       try {
         await audio.play();
         setIsPlaying(true);
+        setBlockedByBrowser(false);
       } catch {
         // ignore
       }
@@ -183,7 +218,10 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
         preload="auto"
         onLoadedMetadata={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
-        onPlay={() => setIsPlaying(true)}
+        onPlay={() => {
+          setIsPlaying(true);
+          setBlockedByBrowser(false);
+        }}
         onPause={() => setIsPlaying(false)}
       />
 
@@ -204,8 +242,20 @@ export function IntroductionSection({ introduction }: IntroductionSectionProps) 
               )}
             </button>
             <span className="tracking-wider uppercase text-[11px] text-[var(--fg-secondary)]">
-              Now Playing: <strong className="font-medium text-[var(--fg-primary)]">“From the Start” — Laufey</strong>
+              {isPlaying ? "Now Playing:" : "Soundtrack:"}{" "}
+              <strong className="font-medium text-[var(--fg-primary)]">
+                “From the Start” — Laufey
+              </strong>
             </span>
+            {blockedByBrowser && !isPlaying && (
+              <button
+                type="button"
+                onClick={togglePlayPause}
+                className="border border-[var(--accent)] bg-[var(--accent)] text-[var(--bg-primary)] px-2 py-0.5 text-[10px] uppercase tracking-wider hover:opacity-90 transition-opacity"
+              >
+                Click anywhere to enable audio
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-3 tabular-nums text-[11px]">

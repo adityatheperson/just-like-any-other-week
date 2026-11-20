@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { ArrowDown } from "lucide-react";
 import type { MemoirContent } from "@/data/memoir";
 
 interface HeroSectionProps {
@@ -20,12 +21,12 @@ export function HeroSection({ data }: HeroSectionProps) {
   return (
     <section
       id="top"
-      className="relative w-full border-b border-[var(--border-subtle)] px-4 pt-14 pb-12 sm:px-8 sm:pt-20 sm:pb-16"
+      className="relative min-h-[85vh] w-full border-b border-[var(--border-subtle)] px-4 py-16 sm:px-8 sm:py-24 flex flex-col justify-between"
     >
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto w-full max-w-5xl my-auto">
         <motion.div
           {...fadeUp}
-          className="flex flex-col sm:flex-row sm:items-end justify-between gap-6"
+          className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-10 border-b border-[var(--border-subtle)]"
         >
           <div>
             <h1 className="font-serif text-5xl sm:text-7xl lg:text-[5.5rem] leading-[0.96] tracking-[-0.025em] text-[var(--fg-primary)]">
@@ -41,6 +42,20 @@ export function HeroSection({ data }: HeroSectionProps) {
             </p>
           </div>
         </motion.div>
+
+        <div className="mt-8 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-[var(--fg-secondary)]">
+          <span>{data.meta.themeTitle}</span>
+          <a
+            href="#prologue"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent("memoir:begin-reading"));
+            }}
+            className="inline-flex items-center gap-2 border-b border-[var(--fg-primary)] pb-0.5 text-[var(--fg-primary)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
+          >
+            <span>{data.hero.scrollPrompt}</span>
+            <ArrowDown className="h-3.5 w-3.5" />
+          </a>
+        </div>
       </div>
     </section>
   );
