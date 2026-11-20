@@ -1,14 +1,29 @@
 "use client";
 
-import React from "react";
-import { memoirData } from "@/data/memoir";
+import React, { useState } from "react";
+import { memoirData, type PhotoAsset } from "@/data/memoir";
+import { TopEditorialBar } from "@/components/TopEditorialBar";
+import { HeroSection } from "@/components/HeroSection";
+import { LightboxModal } from "@/components/LightboxModal";
 
 export default function MemoirPage() {
+  const [expandedPhoto, setExpandedPhoto] = useState<PhotoAsset | null>(null);
+
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--fg-primary)] flex items-center justify-center px-6">
-      <h1 className="font-serif text-5xl sm:text-7xl lg:text-[5.5rem] leading-[0.96] tracking-[-0.025em] text-[var(--fg-primary)] text-center">
-        {memoirData.meta.title}
-      </h1>
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--fg-primary)]">
+      <TopEditorialBar />
+
+      <main>
+        <HeroSection
+          data={memoirData}
+          onExpandPhoto={setExpandedPhoto}
+        />
+      </main>
+
+      <LightboxModal
+        photo={expandedPhoto}
+        onClose={() => setExpandedPhoto(null)}
+      />
     </div>
   );
 }
