@@ -93,10 +93,9 @@ export const memoirData: MemoirContent = {
     photo: {
       id: "hero-photo",
       src: "/images/hero-lake-tahoe.jpg",
-      alt: "Placeholder for opening full-screen photograph of Lake Tahoe",
-      label: "PHOTOGRAPH PLACEHOLDER · public/images/hero-lake-tahoe.jpg",
-      expectedContent:
-        "Add your memoir photographs, videos, audio clips, and ~2,000 words of writing in src/data/memoir.ts.",
+      alt: "placeholder test",
+      label: "placeholder test",
+      expectedContent: "placeholder test",
       aspect: "cinematic",
       size: "full",
     },

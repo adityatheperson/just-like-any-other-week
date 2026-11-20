@@ -100,16 +100,13 @@ export function PhotoFrame({
               <p className="font-serif text-xl sm:text-2xl italic leading-snug opacity-90">
                 {photo.expectedContent}
               </p>
-              <p className="mt-2 font-mono text-xs opacity-65">
-                Drop file at <code className="underline underline-offset-4">{photo.src}</code>
-              </p>
             </div>
 
             {/* Bottom bar with expand prompt */}
             <div className="flex items-center justify-between border-t border-current/10 pt-3 font-mono text-[11px] uppercase tracking-wider opacity-75">
-              <span>Photograph Plate · Unfabricated Placeholder</span>
+              <span>placeholder test</span>
               <span className="inline-flex items-center gap-1.5 group-hover:opacity-100">
-                <span>Inspect Plate</span>
+                <span>Inspect</span>
                 <Maximize2 className="h-3 w-3" strokeWidth={1.5} />
               </span>
             </div>
