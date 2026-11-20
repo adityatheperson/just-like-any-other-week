@@ -484,7 +484,16 @@ export function IntroductionSection({
                 <hr className="my-14 sm:my-16 border-0 border-t border-[var(--border-strong)]" />
                 <div className="space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
                   {introduction.afterPhotoParagraphs.map((paragraph, idx) => (
-                    <p key={idx}>{paragraph}</p>
+                    <p
+                      key={idx}
+                      className={
+                        idx === 0
+                          ? "first-letter:float-left first-letter:mr-3.5 first-letter:mt-1 first-letter:font-serif first-letter:text-5xl sm:first-letter:text-6xl first-letter:leading-[0.85] first-letter:text-[var(--accent)]"
+                          : ""
+                      }
+                    >
+                      {paragraph}
+                    </p>
                   ))}
                 </div>
               </>
