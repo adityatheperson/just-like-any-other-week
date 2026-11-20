@@ -355,6 +355,11 @@ export function IntroductionSection({
       />
 
       <div className="mx-auto max-w-3xl">
+        {/* Section Title */}
+        <h1 className="mb-8 font-serif text-4xl sm:text-6xl leading-[1.02] tracking-[-0.025em] text-[var(--fg-primary)]">
+          Just Like Any Other Week
+        </h1>
+
         {/* Editorial soundtrack bar with progress scrubber and volume slider */}
         <motion.div
           initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
