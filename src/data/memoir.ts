@@ -56,6 +56,7 @@ export interface MemoirContent {
   };
   hero: {
     photo?: PhotoAsset;
+    carousel: PhotoAsset[];
     backgroundVideo?: VideoAsset;
     scrollPrompt: string;
   };
@@ -91,6 +92,44 @@ export const memoirData: MemoirContent = {
 
   hero: {
     scrollPrompt: "Begin Reading",
+    carousel: [
+      {
+        id: "landing-1",
+        src: "/images/landing-1.jpg",
+        alt: "placeholder test",
+        label: "Slide 01 · public/images/landing-1.jpg",
+        expectedContent: "placeholder test",
+        aspect: "cinematic",
+        size: "large",
+      },
+      {
+        id: "landing-2",
+        src: "/images/landing-2.jpg",
+        alt: "placeholder test",
+        label: "Slide 02 · public/images/landing-2.jpg",
+        expectedContent: "placeholder test",
+        aspect: "cinematic",
+        size: "large",
+      },
+      {
+        id: "landing-3",
+        src: "/images/landing-3.jpg",
+        alt: "placeholder test",
+        label: "Slide 03 · public/images/landing-3.jpg",
+        expectedContent: "placeholder test",
+        aspect: "cinematic",
+        size: "large",
+      },
+      {
+        id: "landing-4",
+        src: "/images/landing-4.jpg",
+        alt: "placeholder test",
+        label: "Slide 04 · public/images/landing-4.jpg",
+        expectedContent: "placeholder test",
+        aspect: "cinematic",
+        size: "large",
+      },
+    ],
   },
 
   introduction: {
