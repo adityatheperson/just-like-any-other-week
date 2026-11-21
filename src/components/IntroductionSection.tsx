@@ -15,8 +15,8 @@ interface IntroductionSectionProps {
 const STORAGE_KEY = "memoir_laufey_progress_sec";
 const VOLUME_STORAGE_KEY = "memoir_laufey_volume";
 const DEFAULT_VOLUME = 0.18;
-const FADE_IN_MS = 350;
-const FADE_OUT_MS = 280;
+const FADE_IN_MS = 330;
+const FADE_OUT_MS = 330;
 
 export function IntroductionSection({
   introduction,
