@@ -13,11 +13,12 @@ interface IntroductionSectionProps {
   onExpandPhoto?: (photo: PhotoAsset) => void;
 }
 
-const STORAGE_KEY = "memoir_laufey_progress_sec";
 const VOLUME_STORAGE_KEY = "memoir_laufey_volume";
 const DEFAULT_VOLUME = 0.18;
 const FADE_IN_MS = 330;
 const FADE_OUT_MS = 330;
+const OPENING_START_SEC = 0;
+const REPRISE_START_SEC = 18;
 
 export function IntroductionSection({
   introduction,
@@ -32,6 +33,7 @@ export function IntroductionSection({
   const fadeRafRef = useRef<number | null>(null);
   const isFadingOutRef = useRef<boolean>(false);
   const targetVolumeRef = useRef<number>(DEFAULT_VOLUME);
+  const activeZoneRef = useRef<"opening" | "reprise" | "none">("none");
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -122,11 +124,6 @@ export function IntroductionSection({
     setIsPlaying(false);
     fadeAudioTo(0, FADE_OUT_MS, () => {
       isFadingOutRef.current = false;
-      try {
-        localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
-      } catch {
-        // ignore
-      }
       audio.pause();
     });
   }, [fadeAudioTo]);
@@ -148,29 +145,18 @@ export function IntroductionSection({
     return () => cancelFade();
   }, [cancelFade]);
 
-  // Restore saved progress on metadata load
+  // Set duration and start at the beginning of the song on metadata load
   const handleLoadedMetadata = () => {
     const audio = audioRef.current;
     if (!audio) return;
     setDuration(audio.duration || 0);
-
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = parseFloat(saved);
-        if (!Number.isNaN(parsed) && parsed > 0 && parsed < (audio.duration || 30)) {
-          audio.currentTime = parsed;
-          setCurrentTime(parsed);
-        }
-      }
-    } catch {
-      // ignore localStorage restrictions
-    }
+    audio.currentTime = OPENING_START_SEC;
+    setCurrentTime(OPENING_START_SEC);
   };
 
   const lastSavedSecRef = useRef<number>(-1);
 
-  // Persist playback progress throttled to once per second so the entire page doesn't re-render 4x/sec
+  // Update playback progress throttled to once per second
   const handleTimeUpdate = () => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -178,11 +164,6 @@ export function IntroductionSection({
     if (secFloor !== lastSavedSecRef.current) {
       lastSavedSecRef.current = secFloor;
       setCurrentTime(audio.currentTime);
-      try {
-        localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
-      } catch {
-        // ignore localStorage restrictions
-      }
     }
   };
 
@@ -207,7 +188,16 @@ export function IntroductionSection({
           repRect.top <= window.innerHeight * 0.85 && repRect.bottom >= 80;
       }
 
-      const shouldPlay = inOpeningZone || inRepriseZone;
+      const nextZone: "opening" | "reprise" | "none" = inOpeningZone
+        ? "opening"
+        : inRepriseZone
+        ? "reprise"
+        : "none";
+
+      const prevZone = activeZoneRef.current;
+      activeZoneRef.current = nextZone;
+
+      const shouldPlay = nextZone !== "none";
       inViewRef.current = shouldPlay;
 
       if (!shouldPlay) {
@@ -215,7 +205,17 @@ export function IntroductionSection({
           fadeOutPause();
         }
       } else {
-        if (!userPaused && audio.paused && !document.hidden) {
+        // Seek to start (0:00) when entering opening zone, or near the end (0:18 / ~last 12s) when entering the closing reprise zone
+        if (nextZone !== prevZone) {
+          const targetTime =
+            nextZone === "opening"
+              ? OPENING_START_SEC
+              : Math.min(REPRISE_START_SEC, Math.max(0, (audio.duration || 30) - 12));
+          audio.currentTime = targetTime;
+          setCurrentTime(targetTime);
+        }
+
+        if (!userPaused && (audio.paused || isFadingOutRef.current) && !document.hidden) {
           fadeInPlay();
         }
       }
@@ -233,17 +233,15 @@ export function IntroductionSection({
 
     const handleBeginReading = () => {
       setUserPaused(false);
+      activeZoneRef.current = "opening";
+      audio.currentTime = OPENING_START_SEC;
+      setCurrentTime(OPENING_START_SEC);
       fadeInPlay();
     };
 
     const pauseOnLeave = () => {
       cancelFade();
       if (!audio.paused) {
-        try {
-          localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
-        } catch {
-          // ignore
-        }
         audio.pause();
         setIsPlaying(false);
       }
@@ -293,11 +291,6 @@ export function IntroductionSection({
     return () => {
       cancelFade();
       if (audioEl && !audioEl.paused) {
-        try {
-          localStorage.setItem(STORAGE_KEY, String(audioEl.currentTime));
-        } catch {
-          // ignore
-        }
         audioEl.pause();
       }
     };
@@ -353,11 +346,6 @@ export function IntroductionSection({
     setCurrentTime(nextTime);
     if (audioRef.current) {
       audioRef.current.currentTime = nextTime;
-    }
-    try {
-      localStorage.setItem(STORAGE_KEY, String(nextTime));
-    } catch {
-      // ignore
     }
   };
 
