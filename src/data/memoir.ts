@@ -91,6 +91,7 @@ export interface MemoirContent {
     raftFlipConveyor?: PhotoAsset[];
     afterConveyorParagraphs?: string[];
     secondVideo?: VideoAsset;
+    hikeParagraphs?: string[];
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -376,6 +377,9 @@ export const memoirData: MemoirContent = {
       expectedContent: "Jumping of a rock",
       aspect: "portrait",
     },
+    hikeParagraphs: [
+      "The last day of the trip before the drive home, we decided to go on a hike in Yosemite. The name of the hike was Sentinel Dome, and it was around a 3 mile round trip. We decided on this hike because we had heard that it was not the most physically challenging, but the view was unmatched.",
+    ],
   },
 
   chapters: [
