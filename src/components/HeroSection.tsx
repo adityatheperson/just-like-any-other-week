@@ -72,10 +72,7 @@ export function HeroSection({
             </h1>
           </div>
 
-          <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-4 shrink-0">
-            <p className="font-serif text-xl sm:text-2xl italic text-[var(--fg-secondary)]">
-              {data.meta.themeTitle}
-            </p>
+          <div className="flex items-start lg:items-end justify-end shrink-0">
             <button
               type="button"
               onClick={onBeginReading}
