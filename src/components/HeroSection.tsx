@@ -94,12 +94,16 @@ export function HeroSection({
       >
         <div
           ref={trackRef}
-          className="flex gap-6 select-none will-change-transform"
+          className="flex items-center gap-6 select-none will-change-transform"
         >
           {loopingSlides.map((photo, index) => (
             <div
               key={`${photo.id}-${index}`}
-              className="w-[82vw] sm:w-[520px] lg:w-[640px] shrink-0"
+              className={
+                photo.aspect === "portrait"
+                  ? "w-[68vw] sm:w-[320px] lg:w-[360px] shrink-0"
+                  : "w-[82vw] sm:w-[500px] lg:w-[580px] shrink-0"
+              }
             >
               <PhotoFrame photo={photo} onExpand={onExpandPhoto} />
             </div>
