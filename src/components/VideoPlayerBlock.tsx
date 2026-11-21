@@ -123,7 +123,7 @@ export function VideoPlayerBlock({ video, onPlay }: VideoPlayerBlockProps) {
                 </button>
               </div>
 
-              <div className="my-6 flex items-center justify-center bg-[#121110]">
+              <div className="mt-6 flex items-center justify-center bg-[#121110]">
                 <video
                   src={resolvedSrc}
                   poster={resolvedPoster}
@@ -132,11 +132,6 @@ export function VideoPlayerBlock({ video, onPlay }: VideoPlayerBlockProps) {
                   playsInline
                   className="max-h-[75vh] w-auto object-contain"
                 />
-              </div>
-
-              <div className="flex items-center justify-between border-t border-[#F5F2EB]/15 pt-3 font-mono text-xs uppercase tracking-wider text-[#9E988C]">
-                <span>{video.expectedContent}</span>
-                <span>Press ESC to close</span>
               </div>
             </div>
           </motion.div>

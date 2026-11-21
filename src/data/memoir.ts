@@ -201,8 +201,8 @@ export const memoirData: MemoirContent = {
       id: "romir-surprise-video",
       src: "/videos/romir-surprise.mp4",
       poster: "/images/romir-surprise-thumb.jpg",
-      label: "Romir's Surprise Birthday Video",
-      expectedContent: "Video of Romir coming upstairs to the surprise birthday party",
+      label: "Romir popping a bottle of champaigne",
+      expectedContent: "Romir popping a bottle of champaigne",
       aspect: "portrait",
     },
     afterVideoParagraphs: [
