@@ -92,6 +92,7 @@ export interface MemoirContent {
     afterConveyorParagraphs?: string[];
     secondVideo?: VideoAsset;
     hikeParagraphs?: string[];
+    fifthPhoto?: PhotoAsset;
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -380,6 +381,15 @@ export const memoirData: MemoirContent = {
     hikeParagraphs: [
       "The last day of the trip before the drive home, we decided to go on a hike in Yosemite. The name of the hike was Sentinel Dome, and it was around a 3 mile round trip. We decided on this hike because we had heard that it was not the most physically challenging, but the view was unmatched.",
     ],
+    fifthPhoto: {
+      id: "sentinel-dome",
+      src: "/images/sentinel-dome.jpg",
+      alt: "View from the Sentinel Dome trail in Yosemite",
+      label: "Sentinel Dome · Yosemite",
+      expectedContent: "View from the Sentinel Dome trail in Yosemite",
+      aspect: "wide",
+      size: "full",
+    },
   },
 
   chapters: [
