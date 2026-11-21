@@ -6,6 +6,7 @@ import { Volume2, VolumeX, Play, Pause } from "lucide-react";
 import type { MemoirContent, PhotoAsset } from "@/data/memoir";
 import { PhotoFrame } from "./PhotoFrame";
 import { VideoPlayerBlock } from "./VideoPlayerBlock";
+import { PhotoConveyor } from "./PhotoConveyor";
 
 interface IntroductionSectionProps {
   introduction: MemoirContent["introduction"];
@@ -593,6 +594,14 @@ export function IntroductionSection({
                   <p key={idx}>{paragraph}</p>
                 ))}
               </div>
+            )}
+
+          {introduction.raftFlipConveyor &&
+            introduction.raftFlipConveyor.length > 0 && (
+              <PhotoConveyor
+                photos={introduction.raftFlipConveyor}
+                onExpandPhoto={onExpandPhoto}
+              />
             )}
         </motion.article>
       </div>
