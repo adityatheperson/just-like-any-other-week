@@ -47,11 +47,11 @@ export const PhotoConveyor = React.memo(function PhotoConveyor({
         ))}
       </div>
 
-      <div className="mt-3 px-4 sm:px-8 flex items-center justify-between max-w-3xl mx-auto">
-        <p className="font-mono text-xs uppercase tracking-widest text-[var(--fg-muted)]">
+      <div className="mt-4 px-4 sm:px-8 flex flex-col items-center justify-center gap-3">
+        <p className="text-center font-mono text-xs uppercase tracking-widest text-[var(--fg-muted)]">
           Scroll right to see us capsize →
         </p>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-2.5">
           <button
             type="button"
             onClick={() => scrollByStep("prev")}

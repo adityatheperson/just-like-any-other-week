@@ -61,7 +61,7 @@ export function VideoPlayerBlock({ video, onPlay }: VideoPlayerBlockProps) {
             src={resolvedSrc}
             poster={resolvedPoster}
             controls
-            preload="metadata"
+            preload="none"
             playsInline
             onPlay={onPlay}
             className="h-full w-full object-contain"

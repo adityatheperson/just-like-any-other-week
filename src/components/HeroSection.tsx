@@ -21,26 +21,23 @@ export function HeroSection({
   const trackRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
 
-  // Duplicate slides so the continuous auto-moving marquee loops seamlessly
   const slides = data.hero.carousel;
   const loopingSlides = [...slides, ...slides];
 
   useEffect(() => {
     if (prefersReducedMotion) return;
     let animationFrameId: number;
-    let scrollPos = 0;
+    let xPos = 0;
 
     const step = () => {
       const el = trackRef.current;
       if (el && !isHovered) {
-        scrollPos += 0.65;
+        xPos += 0.65;
         const halfWidth = el.scrollWidth / 2;
-        if (halfWidth > 0 && scrollPos >= halfWidth) {
-          scrollPos = 0;
+        if (halfWidth > 0 && xPos >= halfWidth) {
+          xPos -= halfWidth;
         }
-        el.scrollLeft = scrollPos;
-      } else if (el && isHovered) {
-        scrollPos = el.scrollLeft;
+        el.style.transform = `translate3d(${-xPos}px, 0, 0)`;
       }
       animationFrameId = requestAnimationFrame(step);
     };
@@ -91,18 +88,18 @@ export function HeroSection({
         </motion.div>
       </div>
 
-      {/* Self-Moving Image Carousel */}
+      {/* GPU-Accelerated Self-Moving Image Carousel */}
       <motion.div
         initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-        className="my-auto pt-8"
+        className="my-auto pt-8 overflow-hidden"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <div
           ref={trackRef}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          className="flex gap-6 overflow-x-hidden select-none"
+          className="flex gap-6 select-none will-change-transform"
         >
           {loopingSlides.map((photo, index) => (
             <div

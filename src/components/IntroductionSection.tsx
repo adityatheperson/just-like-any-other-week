@@ -167,15 +167,21 @@ export function IntroductionSection({
     }
   };
 
-  // Persist playback progress continuously
+  const lastSavedSecRef = useRef<number>(-1);
+
+  // Persist playback progress throttled to once per second so the entire page doesn't re-render 4x/sec
   const handleTimeUpdate = () => {
     const audio = audioRef.current;
     if (!audio) return;
-    setCurrentTime(audio.currentTime);
-    try {
-      localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
-    } catch {
-      // ignore localStorage restrictions
+    const secFloor = Math.floor(audio.currentTime);
+    if (secFloor !== lastSavedSecRef.current) {
+      lastSavedSecRef.current = secFloor;
+      setCurrentTime(audio.currentTime);
+      try {
+        localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
+      } catch {
+        // ignore localStorage restrictions
+      }
     }
   };
 
