@@ -89,6 +89,7 @@ export interface MemoirContent {
     fourthPhoto?: PhotoAsset;
     afterFourthPhotoParagraphs?: string[];
     raftFlipConveyor?: PhotoAsset[];
+    afterConveyorParagraphs?: string[];
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -362,6 +363,9 @@ export const memoirData: MemoirContent = {
         aspect: "wide",
         size: "medium",
       },
+    ],
+    afterConveyorParagraphs: [
+      "During this experience, there was nothing in my head other than trying to follow my instructor’s commands. That feeling of nervousness that I had felt at the start of the trip was gone. I couldn’t really think of anything else. The instructor flipped the boat over, and we all slowly climbed back in, and everything we were focused on at the time was finding our missing shoes.",
     ],
   },
 
