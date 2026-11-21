@@ -667,6 +667,15 @@ export function IntroductionSection({
                 ))}
               </div>
             )}
+
+          {introduction.sixthPhoto && (
+            <div className="mt-12 sm:mt-14 max-w-md mx-auto">
+              <PhotoFrame
+                photo={introduction.sixthPhoto}
+                onExpand={(photo) => onExpandPhoto?.(photo)}
+              />
+            </div>
+          )}
         </motion.article>
       </div>
     </section>

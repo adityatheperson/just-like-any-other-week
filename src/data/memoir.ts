@@ -94,6 +94,7 @@ export interface MemoirContent {
     hikeParagraphs?: string[];
     fifthPhoto?: PhotoAsset;
     afterFifthPhotoParagraphs?: string[];
+    sixthPhoto?: PhotoAsset;
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -395,6 +396,15 @@ export const memoirData: MemoirContent = {
       "We had slept late the previous day, so everyone took a while to get ready. We had a late breakfast of cereal and eggs then we took off. It was a long and windy drive, we talked the whole way. We reached the starting point around 2 pm, and we set off.",
       "We got to the summit, and I started thinking. We weren’t acting like this was our last day together on the trip. We were acting the same way we did on the first day and the same way we had for the past four years. Even though we knew that we would all be going our separate ways, it was difficult to imagine a life where we didn’t see each other almost every day.",
     ],
+    sixthPhoto: {
+      id: "sentinel-dome-group",
+      src: "/images/sentinel-dome-group.jpg",
+      alt: "Friends together at the summit of Sentinel Dome in Yosemite",
+      label: "Sentinel Dome Summit · Group Photo",
+      expectedContent: "Friends together at the summit of Sentinel Dome in Yosemite",
+      aspect: "portrait",
+      size: "medium",
+    },
   },
 
   chapters: [
