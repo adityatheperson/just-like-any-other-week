@@ -203,11 +203,8 @@ export function PhotoFrame({
       </div>
 
       {photo.caption && (
-        <figcaption className="mt-3 flex items-baseline justify-between gap-4 text-xs sm:text-sm text-[var(--fg-secondary)]">
+        <figcaption className="mt-3 text-xs sm:text-sm text-[var(--fg-secondary)]">
           <span className="font-sans leading-relaxed">{photo.caption}</span>
-          <span className="font-mono text-[11px] uppercase tracking-wider text-[var(--fg-muted)] shrink-0 tabular-nums">
-            Fig. {photo.id}
-          </span>
         </figcaption>
       )}
     </figure>

@@ -86,6 +86,7 @@ export interface MemoirContent {
     afterVideoParagraphs?: string[];
     thirdPhoto?: PhotoAsset;
     raftingParagraphs?: string[];
+    fourthPhoto?: PhotoAsset;
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -220,6 +221,16 @@ export const memoirData: MemoirContent = {
     raftingParagraphs: [
       "One of the activities that we had planned was white water rafting, and it was something that we were really anticipating. We split up into two groups, where those who could swim went to the Class 4 river, while the rest of the group went on a Class 3 journey. I had decided to go with the higher-class experience, along with 5 other friends. We all had to wake up early, as we had about 7 hours on the river ahead of us. We drove over to the site, and the thing that I remember the most was the instructor telling us about the various different safety precautions and the dangers we might face. To be honest, hearing about all the potential dangers made me nervous, but I couldn't back out now.",
     ],
+    fourthPhoto: {
+      id: "rafting-instructor",
+      src: "/images/rafting-instructor.jpg",
+      alt: "Picture with Instructor",
+      label: "Picture with Instructor",
+      expectedContent: "Picture with Instructor",
+      caption: "Picture with Instructor",
+      aspect: "wide",
+      size: "full",
+    },
   },
 
   chapters: [
