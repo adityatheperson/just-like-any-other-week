@@ -658,6 +658,15 @@ export function IntroductionSection({
               />
             </div>
           )}
+
+          {introduction.afterFifthPhotoParagraphs &&
+            introduction.afterFifthPhotoParagraphs.length > 0 && (
+              <div className="mt-12 sm:mt-14 space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
+                {introduction.afterFifthPhotoParagraphs.map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
+              </div>
+            )}
         </motion.article>
       </div>
     </section>
