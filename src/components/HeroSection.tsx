@@ -61,7 +61,7 @@ export function HeroSection({
       <div className="mx-auto w-full max-w-7xl">
         <motion.div
           {...fadeUp}
-          className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-8 border-b border-[var(--border-subtle)]"
+          className="flex flex-col items-center text-center gap-6 pb-8 border-b border-[var(--border-subtle)]"
         >
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-[var(--fg-muted)]">
@@ -72,16 +72,14 @@ export function HeroSection({
             </h1>
           </div>
 
-          <div className="flex items-start lg:items-end justify-end shrink-0">
-            <button
-              type="button"
-              onClick={onBeginReading}
-              className="inline-flex items-center gap-3 border border-[var(--fg-primary)] bg-[var(--fg-primary)] text-[var(--bg-primary)] px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-[var(--accent)] hover:border-[var(--accent)] transition-colors"
-            >
-              <span>{data.hero.scrollPrompt}</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={onBeginReading}
+            className="inline-flex items-center gap-3 border border-[var(--fg-primary)] bg-[var(--fg-primary)] text-[var(--bg-primary)] px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-[var(--accent)] hover:border-[var(--accent)] transition-colors"
+          >
+            <span>{data.hero.scrollPrompt}</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </button>
         </motion.div>
       </div>
 
