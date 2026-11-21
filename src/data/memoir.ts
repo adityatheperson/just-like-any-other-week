@@ -87,6 +87,7 @@ export interface MemoirContent {
     thirdPhoto?: PhotoAsset;
     raftingParagraphs?: string[];
     fourthPhoto?: PhotoAsset;
+    afterFourthPhotoParagraphs?: string[];
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -230,6 +231,9 @@ export const memoirData: MemoirContent = {
       aspect: "wide",
       size: "full",
     },
+    afterFourthPhotoParagraphs: [
+      "We started going down the river, slowly gaining speed. The instructor was yelling commands that he had taught us just a few minutes earlier. We were constantly being reminded to keep in sync, “Right 3,” “Left 1,” “Reverse 3.” Then a sudden jolt. Our raft had hit a rock, and we flipped. The boat was on top of our heads, and we rose to the top thanks to the life jackets.",
+    ],
   },
 
   chapters: [
