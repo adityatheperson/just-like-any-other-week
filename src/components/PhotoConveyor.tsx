@@ -12,19 +12,40 @@ interface PhotoConveyorProps {
   speed?: number;
 }
 
-export function PhotoConveyor({
+export const PhotoConveyor = React.memo(function PhotoConveyor({
   photos,
   onExpandPhoto,
   speed = 0.55,
 }: PhotoConveyorProps) {
   const prefersReducedMotion = useReducedMotion();
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const loopingPhotos = [...photos, ...photos];
 
+  // Only run the conveyor animation when the conveyor is actually visible in the viewport
   useEffect(() => {
-    if (prefersReducedMotion || photos.length === 0) return;
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry) {
+          setIsVisible(entry.isIntersecting);
+        }
+      },
+      { rootMargin: "150px 0px" }
+    );
+
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion || photos.length === 0 || !isVisible) return;
 
     let rafId: number;
     let scrollPos = trackRef.current?.scrollLeft ?? 0;
@@ -48,12 +69,12 @@ export function PhotoConveyor({
 
     rafId = requestAnimationFrame(step);
     return () => cancelAnimationFrame(rafId);
-  }, [isHovered, prefersReducedMotion, photos.length, speed]);
+  }, [isHovered, isVisible, prefersReducedMotion, photos.length, speed]);
 
   if (photos.length === 0) return null;
 
   return (
-    <div className="my-12 sm:my-16 -mx-4 sm:-mx-8 lg:-mx-24">
+    <div ref={wrapperRef} className="my-12 sm:my-16 -mx-4 sm:-mx-8 lg:-mx-24">
       <div
         ref={trackRef}
         onMouseEnter={() => setIsHovered(true)}
@@ -78,4 +99,4 @@ export function PhotoConveyor({
       </p>
     </div>
   );
-}
+});

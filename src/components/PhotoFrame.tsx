@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { Maximize2, Camera } from "lucide-react";
 import type { PhotoAsset } from "@/data/memoir";
 
@@ -33,18 +32,15 @@ export function resolveAssetUrl(src: string): string {
   return src;
 }
 
-export function PhotoFrame({
+export const PhotoFrame = React.memo(function PhotoFrame({
   photo,
   onExpand,
-  parallax = false,
   className = "",
 }: PhotoFrameProps) {
   const [hasRealImage, setHasRealImage] = useState(false);
   const [imageError, setImageError] = useState(true);
   const [resolvedSrc, setResolvedSrc] = useState(photo.src);
-  const containerRef = useRef<HTMLElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const url = resolveAssetUrl(photo.src);
@@ -55,19 +51,8 @@ export function PhotoFrame({
     }
   }, [photo.src]);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const yOffset = useTransform(
-    scrollYProgress,
-    [0, 1],
-    prefersReducedMotion || !parallax ? ["0%", "0%"] : ["-4%", "4%"]
-  );
-
   return (
-    <figure ref={containerRef} className={`group relative ${className}`}>
+    <figure className={`group relative ${className}`}>
       <div
         onClick={() => onExpand(photo)}
         role="button"
@@ -79,7 +64,7 @@ export function PhotoFrame({
             onExpand(photo);
           }
         }}
-        className={`relative w-full overflow-hidden cursor-pointer transition-colors duration-300 bg-[var(--plate-bg)] text-[var(--fg-primary)] border border-[var(--border-subtle)] ${
+        className={`relative w-full overflow-hidden cursor-pointer bg-[var(--plate-bg)] text-[var(--fg-primary)] border border-[var(--border-subtle)] ${
           aspectClasses[photo.aspect]
         }`}
       >
@@ -88,6 +73,8 @@ export function PhotoFrame({
           ref={imgRef}
           src={resolvedSrc}
           alt={photo.alt}
+          loading="lazy"
+          decoding="async"
           onLoad={() => {
             setHasRealImage(true);
             setImageError(false);
@@ -96,16 +83,13 @@ export function PhotoFrame({
             setHasRealImage(false);
             setImageError(true);
           }}
-          className={`absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.015] ${
+          className={`absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.015] ${
             hasRealImage && !imageError ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         />
 
         {(!hasRealImage || imageError) && (
-          <motion.div
-            style={{ y: yOffset }}
-            className="absolute inset-0 flex flex-col justify-between p-5 sm:p-8 select-none"
-          >
+          <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-8 select-none">
             <div className="flex items-start justify-between gap-4 border-b border-current/10 pb-3">
               <div className="flex items-center gap-2 font-mono text-[11px] tracking-wider uppercase opacity-75">
                 <Camera className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
@@ -129,7 +113,7 @@ export function PhotoFrame({
                 <Maximize2 className="h-3 w-3" strokeWidth={1.5} />
               </span>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {hasRealImage && !imageError && photo.annotation && (
@@ -149,14 +133,10 @@ export function PhotoFrame({
                   markerHeight="4.5"
                   orient="auto-start-reverse"
                 >
-                  <path
-                    d="M 0 1.5 L 8 5 L 0 8.5 z"
-                    fill="#FAF8F3"
-                  />
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#FAF8F3" />
                 </marker>
               </defs>
 
-              {/* Highlight circle around the person */}
               <ellipse
                 cx={photo.annotation.circleX}
                 cy={photo.annotation.circleY}
@@ -168,7 +148,6 @@ export function PhotoFrame({
                 strokeDasharray="2.2 1.4"
               />
 
-              {/* Curved pointer arrow from label to circle */}
               <path
                 d={`M ${photo.annotation.labelX - 2} ${photo.annotation.labelY + 1} Q ${
                   photo.annotation.labelX - 10
@@ -209,4 +188,4 @@ export function PhotoFrame({
       )}
     </figure>
   );
-}
+});
