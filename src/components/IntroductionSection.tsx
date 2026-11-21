@@ -18,7 +18,7 @@ const DEFAULT_VOLUME = 0.18;
 const FADE_IN_MS = 330;
 const FADE_OUT_MS = 330;
 const OPENING_START_SEC = 0;
-const REPRISE_START_SEC = 18;
+const REPRISE_START_SEC = 135; // 2:15 (final chorus & outro of the 2:49 song)
 
 export function IntroductionSection({
   introduction,
@@ -47,8 +47,8 @@ export function IntroductionSection({
   const audioSrc =
     typeof window !== "undefined" &&
     window.location.pathname.startsWith("/just-like-any-other-week")
-      ? "/just-like-any-other-week/audio/from-the-start.m4a"
-      : "/audio/from-the-start.m4a";
+      ? "/just-like-any-other-week/audio/from-the-start.mp3"
+      : "/audio/from-the-start.mp3";
 
   const cancelFade = useCallback(() => {
     if (fadeRafRef.current !== null) {
@@ -205,12 +205,12 @@ export function IntroductionSection({
           fadeOutPause();
         }
       } else {
-        // Seek to start (0:00) when entering opening zone, or near the end (0:18 / ~last 12s) when entering the closing reprise zone
+        // Seek to start (0:00) when entering opening zone, or near the end (2:15) when entering the closing reprise zone
         if (nextZone !== prevZone) {
           const targetTime =
             nextZone === "opening"
               ? OPENING_START_SEC
-              : Math.min(REPRISE_START_SEC, Math.max(0, (audio.duration || 30) - 12));
+              : REPRISE_START_SEC;
           audio.currentTime = targetTime;
           setCurrentTime(targetTime);
         }
@@ -450,7 +450,7 @@ export function IntroductionSection({
             <input
               type="range"
               min={0}
-              max={duration || 30}
+              max={duration || 170}
               step={0.1}
               value={currentTime}
               onChange={handleSeekChange}
@@ -458,7 +458,7 @@ export function IntroductionSection({
               className="flex-1 h-1 accent-[var(--accent)] bg-[var(--border-strong)] cursor-pointer"
             />
             <span className="w-9 text-right">
-              {duration ? formatTime(duration) : "0:30"}
+              {duration ? formatTime(duration) : "2:49"}
             </span>
           </div>
         </motion.div>
