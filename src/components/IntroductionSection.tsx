@@ -15,8 +15,8 @@ interface IntroductionSectionProps {
 const STORAGE_KEY = "memoir_laufey_progress_sec";
 const VOLUME_STORAGE_KEY = "memoir_laufey_volume";
 const DEFAULT_VOLUME = 0.18;
-const FADE_IN_MS = 1100;
-const FADE_OUT_MS = 650;
+const FADE_IN_MS = 350;
+const FADE_OUT_MS = 280;
 
 export function IntroductionSection({
   introduction,
@@ -28,6 +28,7 @@ export function IntroductionSection({
   const audioRef = useRef<HTMLAudioElement>(null);
   const inViewRef = useRef<boolean>(true);
   const fadeRafRef = useRef<number | null>(null);
+  const isFadingOutRef = useRef<boolean>(false);
   const targetVolumeRef = useRef<number>(DEFAULT_VOLUME);
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -88,6 +89,7 @@ export function IntroductionSection({
     const audio = audioRef.current;
     if (!audio) return;
 
+    isFadingOutRef.current = false;
     cancelFade();
     audio.muted = isMuted;
 
@@ -112,10 +114,12 @@ export function IntroductionSection({
   // Smooth stop: ramp volume down to 0 before pausing & saving timestamp
   const fadeOutPause = useCallback(() => {
     const audio = audioRef.current;
-    if (!audio || audio.paused) return;
+    if (!audio || audio.paused || isFadingOutRef.current) return;
 
+    isFadingOutRef.current = true;
     setIsPlaying(false);
     fadeAudioTo(0, FADE_OUT_MS, () => {
+      isFadingOutRef.current = false;
       try {
         localStorage.setItem(STORAGE_KEY, String(audio.currentTime));
       } catch {
