@@ -227,7 +227,6 @@ export const memoirData: MemoirContent = {
       alt: "Picture with Instructor",
       label: "Picture with Instructor",
       expectedContent: "Picture with Instructor",
-      caption: "Picture with Instructor",
       aspect: "wide",
       size: "full",
     },
