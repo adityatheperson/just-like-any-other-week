@@ -95,6 +95,7 @@ export interface MemoirContent {
     fifthPhoto?: PhotoAsset;
     afterFifthPhotoParagraphs?: string[];
     sixthPhoto?: PhotoAsset;
+    closingParagraphs?: string[];
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -405,6 +406,9 @@ export const memoirData: MemoirContent = {
       aspect: "portrait",
       size: "medium",
     },
+    closingParagraphs: [
+      "We asked someone to take a picture up on top of the mountain, and everyday I wake up to “From the Start” by Laufey and look at the picture we took on my wall.",
+    ],
   },
 
   chapters: [

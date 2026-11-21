@@ -26,6 +26,7 @@ export function IntroductionSection({
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const stopTriggerRef = useRef<HTMLParagraphElement>(null);
+  const repriseZoneRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const inViewRef = useRef<boolean>(true);
   const fadeRafRef = useRef<number | null>(null);
@@ -194,11 +195,22 @@ export function IntroductionSection({
       if (!triggerEl) return;
 
       const rect = triggerEl.getBoundingClientRect();
-      // Stop right after the end of the 3rd paragraph ("...And at 10:30 a.m., we began driving!")
-      const passedDrivingEnd = rect.bottom <= window.innerHeight * 0.45;
-      inViewRef.current = !passedDrivingEnd;
+      // Play in the opening zone (before the end of the 3rd paragraph "...we began driving!")
+      const inOpeningZone = rect.bottom > window.innerHeight * 0.45;
 
-      if (passedDrivingEnd) {
+      // Also play when the reader reaches the closing reprise zone at the bottom
+      const repriseEl = repriseZoneRef.current;
+      let inRepriseZone = false;
+      if (repriseEl) {
+        const repRect = repriseEl.getBoundingClientRect();
+        inRepriseZone =
+          repRect.top <= window.innerHeight * 0.85 && repRect.bottom >= 80;
+      }
+
+      const shouldPlay = inOpeningZone || inRepriseZone;
+      inViewRef.current = shouldPlay;
+
+      if (!shouldPlay) {
         if (!audio.paused) {
           fadeOutPause();
         }
@@ -676,6 +688,92 @@ export function IntroductionSection({
               />
             </div>
           )}
+
+          {introduction.closingParagraphs &&
+            introduction.closingParagraphs.length > 0 && (
+              <div ref={repriseZoneRef} className="mt-14 sm:mt-16">
+                {/* Reprise soundtrack bar */}
+                <div className="mb-10 border-y border-[var(--border-subtle)] py-3.5 px-1 font-mono text-xs text-[var(--fg-muted)] space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={togglePlayPause}
+                        aria-label={
+                          isPlaying
+                            ? "Pause From the Start"
+                            : "Play From the Start"
+                        }
+                        className="inline-flex h-8 w-8 items-center justify-center border border-[var(--border-strong)] bg-[var(--bg-secondary)] text-[var(--fg-primary)] hover:bg-[var(--fg-primary)] hover:text-[var(--bg-primary)] transition-colors"
+                      >
+                        {isPlaying ? (
+                          <Pause className="h-3.5 w-3.5" />
+                        ) : (
+                          <Play className="h-3.5 w-3.5 translate-x-[0.5px]" />
+                        )}
+                      </button>
+                      <span className="tracking-wider uppercase text-[11px] text-[var(--fg-secondary)]">
+                        {isPlaying ? "Now Playing:" : "Soundtrack:"}{" "}
+                        <strong className="font-medium text-[var(--fg-primary)]">
+                          “From the Start” — Laufey
+                        </strong>
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        type="button"
+                        onClick={toggleMute}
+                        aria-label={isMuted ? "Unmute audio" : "Mute audio"}
+                        className="p-1 text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] transition-colors"
+                      >
+                        {isMuted || volume === 0 ? (
+                          <VolumeX className="h-3.5 w-3.5" />
+                        ) : (
+                          <Volume2 className="h-3.5 w-3.5" />
+                        )}
+                      </button>
+                      <input
+                        type="range"
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        value={isMuted ? 0 : volume}
+                        onChange={handleVolumeChange}
+                        aria-label="Audio volume"
+                        className="w-24 sm:w-28 h-1 accent-[var(--accent)] bg-[var(--border-strong)] cursor-pointer"
+                      />
+                      <span className="w-8 text-right tabular-nums text-[11px]">
+                        {Math.round((isMuted ? 0 : volume) * 100)}%
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 tabular-nums text-[11px]">
+                    <span className="w-9">{formatTime(currentTime)}</span>
+                    <input
+                      type="range"
+                      min={0}
+                      max={duration || 30}
+                      step={0.1}
+                      value={currentTime}
+                      onChange={handleSeekChange}
+                      aria-label="Seek song position"
+                      className="flex-1 h-1 accent-[var(--accent)] bg-[var(--border-strong)] cursor-pointer"
+                    />
+                    <span className="w-9 text-right">
+                      {duration ? formatTime(duration) : "0:30"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
+                  {introduction.closingParagraphs.map((paragraph, idx) => (
+                    <p key={idx}>{paragraph}</p>
+                  ))}
+                </div>
+              </div>
+            )}
         </motion.article>
       </div>
     </section>
