@@ -90,6 +90,7 @@ export interface MemoirContent {
     afterFourthPhotoParagraphs?: string[];
     raftFlipConveyor?: PhotoAsset[];
     afterConveyorParagraphs?: string[];
+    secondVideo?: VideoAsset;
   };
   chapters: [ChapterData, ChapterData, ChapterData];
   conclusion: {
@@ -367,6 +368,14 @@ export const memoirData: MemoirContent = {
     afterConveyorParagraphs: [
       "During this experience, there was nothing in my head other than trying to follow my instructor’s commands. That feeling of nervousness that I had felt at the start of the trip was gone. I couldn’t really think of anything else. The instructor flipped the boat over, and we all slowly climbed back in, and everything we were focused on at the time was finding our missing shoes.",
     ],
+    secondVideo: {
+      id: "jumping-off-rock-video",
+      src: "/videos/jumping-off-rock.mp4",
+      poster: "/images/jumping-off-rock-thumb.jpg",
+      label: "Jumping of a rock",
+      expectedContent: "Jumping of a rock",
+      aspect: "portrait",
+    },
   },
 
   chapters: [

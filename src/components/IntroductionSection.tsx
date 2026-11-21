@@ -612,6 +612,17 @@ export function IntroductionSection({
                 ))}
               </div>
             )}
+
+          {introduction.secondVideo && (
+            <VideoPlayerBlock
+              video={introduction.secondVideo}
+              onPlay={() => {
+                if (isPlaying) {
+                  fadeOutPause();
+                }
+              }}
+            />
+          )}
         </motion.article>
       </div>
     </section>
