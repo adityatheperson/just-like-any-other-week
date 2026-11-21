@@ -73,6 +73,9 @@ export function PhotoConveyor({
           </div>
         ))}
       </div>
+      <p className="mt-3 text-center font-mono text-xs uppercase tracking-widest text-[var(--fg-muted)]">
+        Scroll right to see us capsize →
+      </p>
     </div>
   );
 }
