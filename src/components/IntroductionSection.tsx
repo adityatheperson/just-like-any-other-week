@@ -187,11 +187,11 @@ export function IntroductionSection({
       if (!triggerEl) return;
 
       const rect = triggerEl.getBoundingClientRect();
-      // As soon as the reader scrolls down so the 3rd paragraph passes the upper-middle of the screen (or scrolls past it), stop the music
-      const passedThirdParagraph = rect.top <= window.innerHeight * 0.45;
-      inViewRef.current = !passedThirdParagraph;
+      // Stop right after the end of the 3rd paragraph ("...And at 10:30 a.m., we began driving!")
+      const passedDrivingEnd = rect.bottom <= window.innerHeight * 0.45;
+      inViewRef.current = !passedDrivingEnd;
 
-      if (passedThirdParagraph) {
+      if (passedDrivingEnd) {
         if (!audio.paused) {
           fadeOutPause();
         }
