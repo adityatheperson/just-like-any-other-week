@@ -5,8 +5,10 @@ import { Volume2, VolumeX, Play, Pause } from "lucide-react";
 
 const VOLUME_STORAGE_KEY = "memoir_laufey_volume";
 const DEFAULT_VOLUME = 0.18;
-const FADE_IN_MS = 330;
-const FADE_OUT_MS = 330;
+const OPENING_FADE_IN_MS = 450;
+const OPENING_FADE_OUT_MS = 1400;
+const REPRISE_FADE_IN_MS = 1600;
+const REPRISE_FADE_OUT_MS = 900;
 const OPENING_START_SEC = 0;
 const REPRISE_START_SEC = 135; // 2:15 (final chorus & outro of the 2:49 song)
 
@@ -200,41 +202,59 @@ export function SoundtrackBar({
     [cancelFade]
   );
 
-  const fadeInPlay = useCallback(async () => {
-    const audio = audioRef.current;
-    if (!audio) return;
+  const fadeInPlay = useCallback(
+    async (customDurationMs?: number) => {
+      const audio = audioRef.current;
+      if (!audio) return;
 
-    isFadingOutRef.current = false;
-    cancelFade();
-    audio.muted = isMuted;
+      const fadeDuration =
+        customDurationMs ??
+        (activeZoneRef.current === "reprise"
+          ? REPRISE_FADE_IN_MS
+          : OPENING_FADE_IN_MS);
 
-    if (audio.paused) {
-      audio.volume = 0.01;
-      try {
-        await audio.play();
-        setIsPlaying(true);
-        setBlockedByBrowser(false);
-        fadeAudioTo(targetVolumeRef.current, FADE_IN_MS);
-      } catch {
-        setBlockedByBrowser(true);
-      }
-    } else {
-      setIsPlaying(true);
-      fadeAudioTo(targetVolumeRef.current, FADE_IN_MS);
-    }
-  }, [cancelFade, fadeAudioTo, isMuted]);
-
-  const fadeOutPause = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio || audio.paused || isFadingOutRef.current) return;
-
-    isFadingOutRef.current = true;
-    setIsPlaying(false);
-    fadeAudioTo(0, FADE_OUT_MS, () => {
       isFadingOutRef.current = false;
-      audio.pause();
-    });
-  }, [fadeAudioTo]);
+      cancelFade();
+      audio.muted = isMuted;
+
+      if (audio.paused) {
+        audio.volume = 0.01;
+        try {
+          await audio.play();
+          setIsPlaying(true);
+          setBlockedByBrowser(false);
+          fadeAudioTo(targetVolumeRef.current, fadeDuration);
+        } catch {
+          setBlockedByBrowser(true);
+        }
+      } else {
+        setIsPlaying(true);
+        fadeAudioTo(targetVolumeRef.current, fadeDuration);
+      }
+    },
+    [cancelFade, fadeAudioTo, isMuted]
+  );
+
+  const fadeOutPause = useCallback(
+    (customDurationMs?: number) => {
+      const audio = audioRef.current;
+      if (!audio || audio.paused || isFadingOutRef.current) return;
+
+      const fadeDuration =
+        customDurationMs ??
+        (activeZoneRef.current === "reprise"
+          ? REPRISE_FADE_OUT_MS
+          : OPENING_FADE_OUT_MS);
+
+      isFadingOutRef.current = true;
+      setIsPlaying(false);
+      fadeAudioTo(0, fadeDuration, () => {
+        isFadingOutRef.current = false;
+        audio.pause();
+      });
+    },
+    [fadeAudioTo]
+  );
 
   useEffect(() => {
     try {
@@ -306,7 +326,11 @@ export function SoundtrackBar({
 
       if (!shouldPlay) {
         if (!audio.paused) {
-          fadeOutPause();
+          fadeOutPause(
+            prevZone === "reprise"
+              ? REPRISE_FADE_OUT_MS
+              : OPENING_FADE_OUT_MS
+          );
         }
       } else {
         if (nextZone !== prevZone) {
@@ -321,7 +345,11 @@ export function SoundtrackBar({
           (audio.paused || isFadingOutRef.current) &&
           !document.hidden
         ) {
-          fadeInPlay();
+          fadeInPlay(
+            nextZone === "reprise"
+              ? REPRISE_FADE_IN_MS
+              : OPENING_FADE_IN_MS
+          );
         }
       }
     };
