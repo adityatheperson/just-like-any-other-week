@@ -405,8 +405,8 @@ export const memoirData: MemoirContent = {
       id: "jumping-off-rock-video",
       src: "/videos/jumping-off-rock.mp4",
       poster: "/images/jumping-off-rock-thumb.jpg",
-      label: "Jumping of a rock",
-      expectedContent: "Jumping of a rock",
+      label: "Jumping off a rock.",
+      expectedContent: "Jumping off a rock.",
       aspect: "portrait",
     },
     hikeParagraphs: [
