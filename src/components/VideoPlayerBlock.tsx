@@ -9,9 +9,14 @@ import { resolveAssetUrl } from "./PhotoFrame";
 interface VideoPlayerBlockProps {
   video: VideoAsset;
   onPlay?: () => void;
+  className?: string;
 }
 
-export function VideoPlayerBlock({ video, onPlay }: VideoPlayerBlockProps) {
+export function VideoPlayerBlock({
+  video,
+  onPlay,
+  className = "",
+}: VideoPlayerBlockProps) {
   const [resolvedSrc, setResolvedSrc] = useState(video.src);
   const [resolvedPoster, setResolvedPoster] = useState(video.poster);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -34,7 +39,6 @@ export function VideoPlayerBlock({ video, onPlay }: VideoPlayerBlockProps) {
   }, [isExpanded]);
 
   const handleOpenExpanded = () => {
-    // Pause inline player so two copies don't play simultaneously
     if (inlineVideoRef.current && !inlineVideoRef.current.paused) {
       inlineVideoRef.current.pause();
     }
@@ -46,13 +50,9 @@ export function VideoPlayerBlock({ video, onPlay }: VideoPlayerBlockProps) {
 
   return (
     <>
-      <figure
-        className={`group my-10 sm:my-12 ${
-          isPortrait ? "max-w-[280px] sm:max-w-[320px] mx-auto" : ""
-        }`}
-      >
+      <figure className={`group ${className}`}>
         <div
-          className={`relative w-full overflow-hidden border bg-[#141412] border-[var(--border-subtle)] ${
+          className={`relative w-full overflow-hidden bg-[#141412] ${
             isPortrait ? "aspect-[9/16]" : "aspect-[16/9]"
           }`}
         >
@@ -64,22 +64,21 @@ export function VideoPlayerBlock({ video, onPlay }: VideoPlayerBlockProps) {
             preload="none"
             playsInline
             onPlay={onPlay}
-            className="h-full w-full object-contain"
+            className="h-full w-full object-cover"
           />
 
-          {/* Expand button matching the photo plates */}
+          {/* Subtle expand icon in top-right on hover */}
           <button
             type="button"
             onClick={handleOpenExpanded}
             aria-label={`Expand ${video.label}`}
-            className="absolute top-3 right-3 z-10 bg-[#141412]/80 text-[#FAF8F3] border border-[#FAF8F3]/25 px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wider flex items-center gap-1.5 opacity-90 sm:opacity-0 sm:group-hover:opacity-100 hover:bg-[#FAF8F3] hover:text-[#141412] transition-all"
+            className="absolute top-2.5 right-2.5 z-10 bg-[#141412]/60 text-[#FAF8F3] p-1.5 opacity-80 sm:opacity-0 sm:group-hover:opacity-100 hover:bg-[#FAF8F3] hover:text-[#141412] transition-all duration-300"
           >
-            <span>Expand</span>
-            <Maximize2 className="h-3 w-3" />
+            <Maximize2 className="h-3.5 w-3.5" strokeWidth={1.5} />
           </button>
         </div>
 
-        <figcaption className="mt-3 text-center font-mono text-xs uppercase tracking-widest text-[var(--fg-muted)]">
+        <figcaption className="mt-2.5 font-serif italic text-base sm:text-[1.05rem] leading-snug text-[var(--fg-secondary)]">
           <span>{video.caption || video.label}</span>
         </figcaption>
       </figure>
@@ -103,7 +102,7 @@ export function VideoPlayerBlock({ video, onPlay }: VideoPlayerBlockProps) {
               className="relative w-full max-w-4xl border border-[#F5F2EB]/20 bg-[#181715] p-4 sm:p-8"
             >
               <div className="flex items-center justify-between border-b border-[#F5F2EB]/15 pb-4">
-                <div className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-wider text-[#B8B2A6]">
+                <div className="flex items-center gap-2.5 font-serif italic text-lg text-[#D6D0C4]">
                   <Film className="h-4 w-4" strokeWidth={1.5} />
                   <span>{video.label}</span>
                 </div>

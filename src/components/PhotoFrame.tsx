@@ -66,7 +66,7 @@ export const PhotoFrame = React.memo(function PhotoFrame({
             onExpand(photo);
           }
         }}
-        className={`relative w-full overflow-hidden cursor-pointer bg-[var(--plate-bg)] text-[var(--fg-primary)] border border-[var(--border-subtle)] ${
+        className={`relative w-full overflow-hidden cursor-pointer bg-[var(--plate-bg)] text-[var(--fg-primary)] ${
           aspectClasses[photo.aspect]
         }`}
       >
@@ -85,7 +85,7 @@ export const PhotoFrame = React.memo(function PhotoFrame({
             setHasRealImage(false);
             setImageError(true);
           }}
-          className={`absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.015] ${
+          className={`absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.012] ${
             hasRealImage && !imageError ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         />
@@ -168,23 +168,23 @@ export const PhotoFrame = React.memo(function PhotoFrame({
                 left: `${photo.annotation.labelX}%`,
                 top: `${photo.annotation.labelY}%`,
               }}
-              className="absolute -translate-y-1/2 bg-[#141412]/85 text-[#FAF8F3] border border-[#FAF8F3]/40 px-2.5 py-0.5 font-serif italic text-base sm:text-lg tracking-wide shadow-sm"
+              className="absolute -translate-y-1/2 bg-[#141412]/80 text-[#FAF8F3] px-2.5 py-0.5 font-serif italic text-base sm:text-lg tracking-wide"
             >
               {photo.annotation.label}
             </span>
           </div>
         )}
 
+        {/* Minimal expand icon only on hover */}
         {hasRealImage && !imageError && (
-          <div className="absolute bottom-3 right-3 bg-[#141412]/75 text-[#FAF8F3] px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wider flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-            <span>Expand</span>
-            <Maximize2 className="h-3 w-3" />
+          <div className="absolute bottom-2.5 right-2.5 bg-[#141412]/55 text-[#FAF8F3] p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <Maximize2 className="h-3.5 w-3.5" strokeWidth={1.5} />
           </div>
         )}
       </div>
 
       {(showTitleBelow || photo.caption) && (
-        <figcaption className="mt-3 text-center font-mono text-xs uppercase tracking-widest text-[var(--fg-muted)]">
+        <figcaption className="mt-2.5 font-serif italic text-base sm:text-[1.05rem] leading-snug text-[var(--fg-secondary)]">
           <span>{photo.caption || photo.label}</span>
         </figcaption>
       )}
