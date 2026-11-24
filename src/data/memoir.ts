@@ -243,7 +243,7 @@ export const memoirData: MemoirContent = {
       aspect: "portrait",
     },
     afterVideoParagraphs: [
-      "Looking back, it was really easy to convince everyone to commit to the surprise. Everything was really smooth and fell into place. We had spent years celebrating, making memories, and strengthening bonds. This specific event was not any different. It felt like one of those 100 events that we did in the past. We weren’t concerned about college, about future careers, or about anything but planning the surprise. We were there, celebrating another birthday, just like we always had.",
+      "Looking back, it was really easy to convince everyone to commit to the surprise. Everything fell into place without much discussion. We had spent years celebrating birthdays together, and this one felt no different. Just a few hours earlier, I had been thinking about how we would all be going our separate ways, but at that moment, the only thing we were concerned about was getting a piece of cake. We were there, celebrating another birthday, just like we always had.",
     ],
     thirdPhoto: {
       id: "birthday-celebration",
