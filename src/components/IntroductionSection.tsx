@@ -6,6 +6,7 @@ import { PhotoFrame } from "./PhotoFrame";
 import { VideoPlayerBlock } from "./VideoPlayerBlock";
 import { PhotoConveyor } from "./PhotoConveyor";
 import { SoundtrackBar } from "./SoundtrackBar";
+import { HoverPhotoWord } from "./HoverPhotoWord";
 
 interface IntroductionSectionProps {
   introduction: MemoirContent["introduction"];
@@ -236,9 +237,24 @@ export function IntroductionSection({
           {introduction.afterFifthPhotoParagraphs &&
             introduction.afterFifthPhotoParagraphs.length > 0 && (
               <div className="mt-12 sm:mt-14 space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
-                {introduction.afterFifthPhotoParagraphs.map((paragraph, idx) => (
-                  <p key={idx}>{paragraph}</p>
-                ))}
+                {introduction.afterFifthPhotoParagraphs.map((paragraph, idx) => {
+                  const target = "what we were going to eat for dinner.";
+                  if (idx === 0 && paragraph.includes(target)) {
+                    const [before, after] = paragraph.split(target);
+                    return (
+                      <p key={idx}>
+                        {before}what we were going to eat for{" "}
+                        <HoverPhotoWord
+                          word="dinner"
+                          imageSrc="/images/hike-dinner.jpg"
+                          imageAlt="Dinner after the hike"
+                        />
+                        .{after}
+                      </p>
+                    );
+                  }
+                  return <p key={idx}>{paragraph}</p>;
+                })}
               </div>
             )}
 
