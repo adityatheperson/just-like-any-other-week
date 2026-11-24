@@ -267,7 +267,7 @@ export const memoirData: MemoirContent = {
       size: "full",
     },
     afterFourthPhotoParagraphs: [
-      "We started going down the river, slowly gaining speed. The instructor was yelling commands that he had taught us just a few minutes earlier. We were constantly being reminded to keep in sync, “Right 3,” “Left 1,” “Reverse 3.” Then a sudden jolt. Our raft had hit a rock, and we flipped. The boat was on top of our heads, and we rose to the top thanks to the life jackets.",
+      "We started going down the river, slowly gaining speed. The instructor was yelling commands that he had taught us just a few minutes earlier. We were constantly being reminded to keep in sync, “Right 3,” “Left 1,” “Reverse 3.” Initially, we struggled to paddle in sync, even as we went through the smaller rapids. As we approached our first major rapid, all we could see ahead of us was white water.",
     ],
     raftFlipConveyor: [
       {
