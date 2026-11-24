@@ -232,7 +232,7 @@ export const memoirData: MemoirContent = {
       },
     },
     afterSecondPhotoParagraphs: [
-      "The way we called him upstairs was by telling him that there was a huge bear outside the house. He bolted up the stairs, expecting to see a massive animal, but instead, he just saw a cake with ten people around it. I could see his expression change in real time. It went from an excited one to one of shock, then he smiled.",
+      "The way we called him upstairs was by convincing him that there was a huge bear outside the house. I first said, in a moderately loud voice, “Is that a bear?” We then had someone else scream, “OH MY GOD, THERE’S A BEAR OUTSIDE!” Romir bolted up the stairs, expecting to see a bear outside, only to find ten of his friends standing around a candlelit cake. None of us said anything at first. We all just stood there, waiting to see his reaction. I could see his expression change in real time, from a look of confusion to a big smile. As soon as he smiled, we all yelled, “Happy birthday!” Everyone was laughing, and we were all waiting to get a piece of cake.",
     ],
     video: {
       id: "romir-surprise-video",
