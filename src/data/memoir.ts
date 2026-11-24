@@ -436,7 +436,7 @@ export const memoirData: MemoirContent = {
       size: "medium",
     },
     closingParagraphs: [
-      "We asked someone to take a picture up on top of the mountain, and everyday I wake up to “From the Start” by Laufey and look at the picture we took on my wall.",
+      "We asked someone to take a picture of us at the top of the mountain. That picture now hangs on my wall. Every morning, I wake up to “From the Start” by Laufey and look at that same picture.",
     ],
   },
 
