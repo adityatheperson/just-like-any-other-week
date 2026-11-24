@@ -268,6 +268,7 @@ export const memoirData: MemoirContent = {
     },
     afterFourthPhotoParagraphs: [
       "We started going down the river, slowly gaining speed. The instructor was yelling commands that he had taught us just a few minutes earlier. We were constantly being reminded to keep in sync, “Right 3,” “Left 1,” “Reverse 3.” Initially, we struggled to paddle in sync, even as we went through the smaller rapids. As we approached our first major rapid, all we could see ahead of us was white water.",
+      "We could see the rock that we were heading toward, but there was nothing we could do about it. Then, a sudden jolt. Before I could even process what had happened, I was underwater. The water was cold, and all I could see was blue. I couldn’t hear anything but the sound of rushing water. Within about five seconds, I felt my life jacket pulling me toward the surface. As we resurfaced, everyone was gasping for air and trying to find something to hold onto. Our raft was now upside down.",
     ],
     raftFlipConveyor: [
       {
