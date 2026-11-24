@@ -422,7 +422,7 @@ export const memoirData: MemoirContent = {
       size: "full",
     },
     afterFifthPhotoParagraphs: [
-      "We had slept late the previous day, so everyone took a while to get ready. We had a late breakfast of cereal and eggs then we took off. It was a long and windy drive, we talked the whole way. We reached the starting point around 2 pm, and we set off.",
+      "We had slept late the previous day, so everyone took a while to get ready. We had a late breakfast of cereal and eggs then we took off. It was a long and windy drive, we talked the whole way. We reached the starting point around 2 p.m., and we set off. As we made our way up, we could see more and more of the Yosemite landscape. Everything around us was so green and vibrant. Throughout the hike, my friends were either singing or discussing what we were going to eat for dinner. I had brought my camera along in the hopes of capturing both the scenery and our experiences together. I was constantly taking pictures, some of the landscape, some of my friends posing for the camera, and others of them when they didn't even realize I was taking a picture.",
       "We got to the summit, and I started thinking. We weren’t acting like this was our last day together on the trip. We were acting the same way we did on the first day and the same way we had for the past four years. Even though we knew that we would all be going our separate ways, it was difficult to imagine a life where we didn’t see each other almost every day.",
     ],
     sixthPhoto: {
