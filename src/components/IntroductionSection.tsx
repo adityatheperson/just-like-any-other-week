@@ -233,30 +233,24 @@ export function IntroductionSection({
             </div>
           )}
 
-          {/* Trail & Summit reflection wrapped around the Summit Group Portrait */}
-          <div className="mt-12 sm:mt-14 clearfix max-w-3xl mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
-            {introduction.afterFifthPhotoParagraphs?.[0] && (
-              <p className="mb-8">{introduction.afterFifthPhotoParagraphs[0]}</p>
-            )}
-
-            {introduction.sixthPhoto && (
-              <div className="my-6 sm:my-2 sm:float-right sm:w-[46%] lg:w-[50%] sm:ml-8 lg:ml-10 sm:-mr-10 lg:-mr-20">
-                <PhotoFrame
-                  photo={introduction.sixthPhoto}
-                  showTitleBelow
-                  onExpand={(photo) => onExpandPhoto?.(photo)}
-                />
+          {introduction.afterFifthPhotoParagraphs &&
+            introduction.afterFifthPhotoParagraphs.length > 0 && (
+              <div className="mt-12 sm:mt-14 space-y-8 editorial-measure mx-auto text-[1.15rem] sm:text-[1.25rem] leading-[1.9] tracking-[-0.005em] text-[var(--fg-primary)]">
+                {introduction.afterFifthPhotoParagraphs.map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
               </div>
             )}
 
-            {introduction.afterFifthPhotoParagraphs
-              ?.slice(1)
-              .map((paragraph, idx) => (
-                <p key={idx} className="mb-8">
-                  {paragraph}
-                </p>
-              ))}
-          </div>
+          {introduction.sixthPhoto && (
+            <div className="mt-12 sm:mt-14 max-w-md mx-auto">
+              <PhotoFrame
+                photo={introduction.sixthPhoto}
+                showTitleBelow
+                onExpand={(photo) => onExpandPhoto?.(photo)}
+              />
+            </div>
+          )}
 
           {/* Closing Laufey Reprise & Wall Photo Reflection */}
           {introduction.closingParagraphs &&
