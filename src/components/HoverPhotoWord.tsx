@@ -35,7 +35,7 @@ export function HoverPhotoWord({
         onClick={() => setIsOpen((prev) => !prev)}
         onFocus={() => setIsOpen(true)}
         onBlur={() => setIsOpen(false)}
-        className="inline cursor-pointer bg-[var(--accent-soft)] text-[var(--accent)] font-medium px-1.5 py-0.5 border-b border-dashed border-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--bg-primary)] transition-colors"
+        className="inline cursor-pointer underline decoration-[var(--accent)] decoration-2 underline-offset-4 hover:text-[var(--accent)] transition-colors"
       >
         {word}
       </button>
