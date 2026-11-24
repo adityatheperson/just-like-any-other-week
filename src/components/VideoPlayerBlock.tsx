@@ -79,14 +79,9 @@ export function VideoPlayerBlock({ video, onPlay }: VideoPlayerBlockProps) {
           </button>
         </div>
 
-        {video.caption && (
-          <figcaption className="mt-3 flex items-baseline justify-between gap-4 text-xs sm:text-sm text-[var(--fg-secondary)]">
-            <span>{video.caption}</span>
-            <span className="font-mono text-[11px] uppercase tracking-wider text-[var(--fg-muted)]">
-              Video
-            </span>
-          </figcaption>
-        )}
+        <figcaption className="mt-3 text-center font-mono text-xs uppercase tracking-widest text-[var(--fg-muted)]">
+          <span>{video.caption || video.label}</span>
+        </figcaption>
       </figure>
 
       {/* Lightbox modal for expanded video viewing */}

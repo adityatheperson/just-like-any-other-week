@@ -64,6 +64,7 @@ export function IntroductionSection({
             <div className="mt-14 sm:mt-16">
               <PhotoFrame
                 photo={introduction.photo}
+                showTitleBelow
                 onExpand={(photo) => onExpandPhoto?.(photo)}
               />
             </div>
@@ -94,6 +95,7 @@ export function IntroductionSection({
             <div className="mt-12 sm:mt-14 max-w-md mx-auto">
               <PhotoFrame
                 photo={introduction.secondPhoto}
+                showTitleBelow
                 onExpand={(photo) => onExpandPhoto?.(photo)}
               />
             </div>
@@ -128,6 +130,7 @@ export function IntroductionSection({
             <div className="mt-12 sm:mt-14">
               <PhotoFrame
                 photo={introduction.thirdPhoto}
+                showTitleBelow
                 onExpand={(photo) => onExpandPhoto?.(photo)}
               />
             </div>
@@ -157,6 +160,7 @@ export function IntroductionSection({
             <div className="mt-12 sm:mt-14">
               <PhotoFrame
                 photo={introduction.fourthPhoto}
+                showTitleBelow
                 onExpand={(photo) => onExpandPhoto?.(photo)}
               />
             </div>
@@ -219,6 +223,7 @@ export function IntroductionSection({
             <div className="mt-12 sm:mt-14">
               <PhotoFrame
                 photo={introduction.fifthPhoto}
+                showTitleBelow
                 onExpand={(photo) => onExpandPhoto?.(photo)}
               />
             </div>
@@ -237,6 +242,7 @@ export function IntroductionSection({
             <div className="mt-12 sm:mt-14 max-w-md mx-auto">
               <PhotoFrame
                 photo={introduction.sixthPhoto}
+                showTitleBelow
                 onExpand={(photo) => onExpandPhoto?.(photo)}
               />
             </div>

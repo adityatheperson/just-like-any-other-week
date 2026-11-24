@@ -9,6 +9,7 @@ interface PhotoFrameProps {
   onExpand: (photo: PhotoAsset) => void;
   priority?: boolean;
   parallax?: boolean;
+  showTitleBelow?: boolean;
   className?: string;
 }
 
@@ -35,6 +36,7 @@ export function resolveAssetUrl(src: string): string {
 export const PhotoFrame = React.memo(function PhotoFrame({
   photo,
   onExpand,
+  showTitleBelow = false,
   className = "",
 }: PhotoFrameProps) {
   const [hasRealImage, setHasRealImage] = useState(false);
@@ -181,9 +183,9 @@ export const PhotoFrame = React.memo(function PhotoFrame({
         )}
       </div>
 
-      {photo.caption && (
-        <figcaption className="mt-3 text-xs sm:text-sm text-[var(--fg-secondary)]">
-          <span className="font-sans leading-relaxed">{photo.caption}</span>
+      {(showTitleBelow || photo.caption) && (
+        <figcaption className="mt-3 text-center font-mono text-xs uppercase tracking-widest text-[var(--fg-muted)]">
+          <span>{photo.caption || photo.label}</span>
         </figcaption>
       )}
     </figure>
