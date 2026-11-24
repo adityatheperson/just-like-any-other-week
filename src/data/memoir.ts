@@ -398,7 +398,7 @@ export const memoirData: MemoirContent = {
       },
     ],
     afterConveyorParagraphs: [
-      "During this experience, there was nothing in my head other than trying to follow my instructor’s commands. That feeling of nervousness that I had felt at the start of the trip was gone. I couldn’t really think of anything else. The instructor flipped the boat over, and we all slowly climbed back in, and everything we were focused on at the time was finding our missing shoes.",
+      "Surprisingly, I wasn’t really scared. There was nothing going through my head other than trying to follow my instructor’s commands. That feeling of nervousness that I had felt at the start of the trip was gone. The instructor flipped the raft back over, and we all slowly climbed back in. Just moments after being thrown overboard, the only thing we were concerned about was finding our missing shoes.",
     ],
     secondVideo: {
       id: "jumping-off-rock-video",
