@@ -6,23 +6,34 @@ import { memoirData, type PhotoAsset } from "@/data/memoir";
 import { TopEditorialBar } from "@/components/TopEditorialBar";
 import { HeroSection } from "@/components/HeroSection";
 import { IntroductionSection } from "@/components/IntroductionSection";
+import { QuestionsSection } from "@/components/QuestionsSection";
 import { LightboxModal } from "@/components/LightboxModal";
 
+type PageView = "landing" | "reading" | "questions";
+
 export default function MemoirPage() {
-  const [hasBegunReading, setHasBegunReading] = useState(false);
+  const [view, setView] = useState<PageView>("landing");
   const [expandedPhoto, setExpandedPhoto] = useState<PhotoAsset | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--fg-primary)]">
       <TopEditorialBar
-        showBackButton={hasBegunReading}
-        onReturnHome={() => setHasBegunReading(false)}
+        showBackButton={view !== "landing"}
+        isQuestionsView={view === "questions"}
+        onReturnHome={() => {
+          setView("landing");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        onOpenQuestions={() => {
+          setView("questions");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
       />
 
       <main>
         <AnimatePresence mode="wait">
-          {!hasBegunReading ? (
+          {view === "landing" && (
             <motion.div
               key="landing"
               initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}
@@ -33,13 +44,15 @@ export default function MemoirPage() {
               <HeroSection
                 data={memoirData}
                 onBeginReading={() => {
-                  setHasBegunReading(true);
+                  setView("reading");
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
                 onExpandPhoto={setExpandedPhoto}
               />
             </motion.div>
-          ) : (
+          )}
+
+          {view === "reading" && (
             <motion.div
               key="reading"
               initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
@@ -51,6 +64,18 @@ export default function MemoirPage() {
                 introduction={memoirData.introduction}
                 onExpandPhoto={setExpandedPhoto}
               />
+            </motion.div>
+          )}
+
+          {view === "questions" && (
+            <motion.div
+              key="questions"
+              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <QuestionsSection />
             </motion.div>
           )}
         </AnimatePresence>

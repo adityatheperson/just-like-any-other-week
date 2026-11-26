@@ -5,12 +5,16 @@ import { ArrowLeft } from "lucide-react";
 
 interface TopEditorialBarProps {
   showBackButton?: boolean;
+  isQuestionsView?: boolean;
   onReturnHome?: () => void;
+  onOpenQuestions?: () => void;
 }
 
 export function TopEditorialBar({
   showBackButton = false,
+  isQuestionsView = false,
   onReturnHome,
+  onOpenQuestions,
 }: TopEditorialBarProps) {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]">
@@ -28,7 +32,7 @@ export function TopEditorialBar({
           Just Like Any Other Week
         </a>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {showBackButton && onReturnHome && (
             <button
               type="button"
@@ -37,6 +41,16 @@ export function TopEditorialBar({
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               <span>Back to Landing Page</span>
+            </button>
+          )}
+
+          {!isQuestionsView && onOpenQuestions && (
+            <button
+              type="button"
+              onClick={onOpenQuestions}
+              className="inline-flex items-center gap-2 border border-[var(--border-strong)] bg-[var(--bg-secondary)] px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider text-[var(--fg-primary)] hover:bg-[var(--fg-primary)] hover:text-[var(--bg-primary)] transition-colors"
+            >
+              <span>Questions</span>
             </button>
           )}
         </div>
